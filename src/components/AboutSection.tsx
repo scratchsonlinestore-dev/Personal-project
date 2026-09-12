@@ -50,10 +50,14 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
           <div className="lg:col-span-5">
             <div className="p-6 sm:p-8 rounded-3xl bg-[#171717] text-white border border-[#111111] shadow-2xl space-y-6">
               
-              {/* Card Header with circular badge */}
+              {/* Card Header with portrait badge */}
               <div className="flex items-center gap-3 pb-4 border-b border-white/10">
-                <div className="w-12 h-12 rounded-full bg-[#F5A400] text-[#111111] flex items-center justify-center font-black text-sm shadow-xs">
-                  ATV
+                <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/20 shadow-xs shrink-0 bg-[#111111]">
+                  <img
+                    src="/arshad-portrait-dark.jpg"
+                    alt="Arshad TV"
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
                 <div>
                   <h3 className="text-base font-black text-white">

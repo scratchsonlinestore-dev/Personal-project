@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Download,
   ArrowUpRight,
@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import { Profile } from '../types';
 import { downloadOfficialResume } from '../utils/downloadCV';
+import arshadHeroHalf from '../assets/images/arshad_hero_half_1789200724915.jpg';
+import arshadCutoutSuit from '../assets/images/arshad_cutout_suit_1789200754490.jpg';
 
 interface HeroProps {
   profile: Profile;
@@ -28,6 +30,8 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenProjects }) => {
+  const [photoVariant, setPhotoVariant] = useState<'half' | 'suit'>('half');
+
   const handleDownloadCV = () => {
     downloadOfficialResume();
     onOpenResume();
@@ -53,11 +57,8 @@ export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenProject
             id="hero-heading"
             className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight text-[#111111] leading-[1.05]"
           >
-            I&apos;m{' '}
-            <span className="text-[#F5A400] relative inline-block">
-              {profile.name}
-              <span className="text-[#F5A400] ml-1">✦</span>
-            </span>
+            I&apos;m {profile.name}
+            <span className="text-[#F5A400] ml-2">✦</span>
           </h1>
           <p className="mt-4 text-xl sm:text-2xl md:text-3xl font-extrabold text-[#222222] tracking-tight">
             {profile.tagline}
@@ -70,55 +71,32 @@ export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenProject
         {/* Hero Showcase Centerpiece with Layered Website Panels & Personal Profile Photo */}
         <div className="relative max-w-5xl mx-auto my-6 sm:my-10">
 
-          {/* Rotating Circular Stamp Badge */}
-          <div className="absolute -top-6 -right-2 sm:-top-8 sm:right-2 z-30 pointer-events-none">
-            <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-[#111111] text-[#FFFFFF] p-2 flex items-center justify-center shadow-2xl border-2 border-[#F5A400]">
-              <svg className="w-full h-full animate-spin-slow" viewBox="0 0 100 100">
-                <path
-                  id="stampPath"
-                  d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
-                  fill="none"
-                />
-                <text className="text-[9.5px] font-black uppercase tracking-[2.6px] fill-[#FFFFFF]">
-                  <textPath href="#stampPath" startOffset="0%">
-                    ✦ OPEN TO WORK ✦ E-COMMERCE SPECIALIST ✦
-                  </textPath>
-                </text>
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-9 h-9 rounded-full bg-[#F5A400] text-[#111111] flex items-center justify-center font-black text-xs shadow-xs">
-                  ATV
-                </div>
-              </div>
+          {/* Marketplace Floating Labels around the composition */}
+          <div className="hidden md:flex absolute -top-3 left-4 z-30">
+            <div className="px-4 py-1.5 rounded-full bg-[#111111] text-[#FFFFFF] border border-white/20 shadow-xl text-xs font-bold flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FF9900]"></span>
+              <span>Amazon FBA & Sourcing</span>
             </div>
           </div>
 
-          {/* Small Floating Labels around the composition */}
-          <div className="hidden md:block absolute -top-4 left-4 z-30 animate-float-slow">
-            <div className="px-3.5 py-1.5 rounded-full bg-[#111111] text-[#FFFFFF] border border-[#111111] shadow-lg text-xs font-bold flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#F5A400]"></span>
-              <span>Shopify Liquid Specialist</span>
+          <div className="hidden md:flex absolute -top-3 right-6 z-30">
+            <div className="px-4 py-1.5 rounded-full bg-[#111111] text-[#FFFFFF] border border-white/20 shadow-xl text-xs font-bold flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#2874F0]"></span>
+              <span>Flipkart & Meesho Operations</span>
             </div>
           </div>
 
-          <div className="hidden md:block absolute -top-4 right-32 z-30 animate-float-reverse">
-            <div className="px-3.5 py-1.5 rounded-full bg-[#111111] text-[#FFFFFF] border border-[#111111] shadow-lg text-xs font-bold flex items-center gap-1.5">
-              <span className="text-[#F5A400]">✦</span>
-              <span>Meta Ads ROAS 4.2x</span>
-            </div>
-          </div>
-
-          <div className="hidden lg:block absolute -bottom-5 left-8 z-30 animate-float-slow">
-            <div className="px-3.5 py-1.5 rounded-full bg-[#F5A400] text-[#111111] border border-[#111111] shadow-lg text-xs font-black flex items-center gap-1.5">
+          <div className="hidden lg:flex absolute -bottom-4 left-8 z-30">
+            <div className="px-4 py-1.5 rounded-full bg-[#F5A400] text-[#111111] border border-[#111111] shadow-xl text-xs font-black flex items-center gap-1.5">
               <span>✦</span>
-              <span>Amazon • Flipkart • Meesho • noon</span>
+              <span>noon Marketplace Specialist (GCC)</span>
             </div>
           </div>
 
-          <div className="hidden lg:block absolute -bottom-5 right-8 z-30 animate-float-reverse">
-            <div className="px-3.5 py-1.5 rounded-full bg-[#FFFFFF] text-[#111111] border border-[#111111] shadow-lg text-xs font-black flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#25D366]"></span>
-              <span>Open to Relocation: GCC / Qatar</span>
+          <div className="hidden lg:flex absolute -bottom-4 right-8 z-30">
+            <div className="px-4 py-1.5 rounded-full bg-[#FFFFFF] text-[#111111] border border-[#111111] shadow-xl text-xs font-black flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#25D366]"></span>
+              <span>Shopify • Meta Ads ROAS 4.2x</span>
             </div>
           </div>
 
@@ -233,55 +211,65 @@ export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenProject
                 </div>
               </div>
 
-              {/* Central Column: PERSONAL PROFILE PHOTO AS THE CENTRAL HERO ELEMENT */}
+              {/* Central Column: ARSHAD TV HALF-SIZE HERO IMAGE IN MAIN CANVAS */}
               <div className="lg:col-span-4 order-1 lg:order-2 flex flex-col items-center text-center">
-                <div className="relative group">
+                <div className="relative group w-full max-w-[290px] sm:max-w-[320px]">
                   
-                  {/* Decorative Amber Ring Around Photo */}
-                  <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-[#F5A400] via-[#F5A400]/40 to-[#111111] opacity-75 blur-sm group-hover:opacity-100 transition-opacity duration-300"></div>
+                  {/* Subtle Elegant Ambient Backdrop Glow */}
+                  <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-b from-[#F5A400]/25 via-white/5 to-transparent blur-md pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity"></div>
 
-                  {/* Central Portrait Card Container */}
-                  <div className="relative w-64 sm:w-72 h-80 sm:h-88 rounded-3xl bg-gradient-to-b from-[#222222] to-[#111111] border-2 border-[#F5A400] overflow-hidden shadow-2xl flex flex-col justify-between p-4">
+                  {/* Main Portrait Card Container - Enhanced, Clean, Non-Circular Rectangular Card */}
+                  <div className="relative rounded-3xl bg-[#111111] border-2 border-white/15 overflow-hidden shadow-2xl flex flex-col">
                     
-                    {/* Top Portrait Header Tag */}
-                    <div className="flex items-center justify-between z-10">
-                      <span className="px-2.5 py-1 rounded-full bg-[#111111]/80 backdrop-blur-sm border border-white/10 text-[10px] font-black uppercase tracking-wider text-[#F5A400] flex items-center gap-1.5">
+                    {/* Top Portrait Status Bar */}
+                    <div className="absolute top-3 inset-x-3 z-20 flex items-center justify-between pointer-events-none">
+                      <span className="px-3 py-1 rounded-full bg-[#111111]/85 backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-wider text-[#F5A400] flex items-center gap-1.5 shadow-md">
                         <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse"></span>
                         SPECIALIST
                       </span>
-                      <span className="px-2.5 py-1 rounded-full bg-[#111111]/80 backdrop-blur-sm border border-white/10 text-[10px] font-bold text-white">
+                      <span className="px-3 py-1 rounded-full bg-[#111111]/85 backdrop-blur-md border border-white/20 text-[10px] font-bold text-white shadow-md">
                         Founder @ Scratch
                       </span>
                     </div>
 
-                    {/* Central High-Resolution Stylized Profile Visual */}
-                    <div className="relative flex-1 flex items-center justify-center my-2">
-                      <div className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-2xl bg-gradient-to-tr from-[#111111] via-[#1c1a16] to-[#2b2518] border border-[#F5A400]/40 flex items-center justify-center overflow-hidden shadow-inner group-hover:scale-105 transition-transform duration-300">
-                        {/* High-End Portrait Vector & Monogram */}
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-3">
-                          <div className="w-16 h-16 rounded-full bg-[#F5A400] text-[#111111] flex items-center justify-center font-black text-2xl shadow-lg border-2 border-white/20 mb-2">
-                            ATV
-                          </div>
-                          <span className="text-sm font-black text-white tracking-wide">
-                            {profile.name}
-                          </span>
-                          <span className="text-[10px] font-semibold text-[#F5A400] uppercase tracking-wider mt-0.5">
-                            E-Commerce Director
-                          </span>
-                        </div>
+                    {/* Half-Size Portrait Image Viewport */}
+                    <div className="relative w-full h-[380px] sm:h-[430px] overflow-hidden bg-gradient-to-b from-[#1c1a16] to-[#111111]">
+                      <img
+                        id="hero-arshad-photo"
+                        src={photoVariant === 'half' ? arshadHeroHalf : arshadCutoutSuit}
+                        alt="Arshad TV - E-Commerce & Digital Trading Specialist"
+                        className="w-full h-full object-cover object-top filter contrast-[1.02] brightness-[1.01] transition-transform duration-300 group-hover:scale-[1.02]"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          target.src = photoVariant === 'half' ? '/arshad-portrait.jpg' : '/arshad-portrait-dark.jpg';
+                        }}
+                      />
+                      
+                      {/* Subtle Bottom Gradient Scrim for crisp text contrast */}
+                      <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#111111] via-[#111111]/70 to-transparent pointer-events-none"></div>
 
-                        {/* Subtle Grid / Circuit Lines in Avatar Background */}
-                        <div className="absolute inset-0 bg-[radial-gradient(#F5A400_1px,transparent_1px)] [background-size:12px_12px] opacity-20 pointer-events-none"></div>
+                      {/* Photo Variant Switcher Pill */}
+                      <div className="absolute bottom-2.5 right-2.5 z-20">
+                        <button
+                          type="button"
+                          onClick={() => setPhotoVariant(photoVariant === 'half' ? 'suit' : 'half')}
+                          title="Switch Portrait View"
+                          className="px-2.5 py-1 rounded-lg bg-[#111111]/90 hover:bg-[#F5A400] text-white hover:text-[#111111] border border-white/25 text-[10px] font-bold tracking-wide transition-all shadow-md cursor-pointer flex items-center gap-1 backdrop-blur-sm"
+                        >
+                          <span>{photoVariant === 'half' ? '👔 Suit View' : '📷 Studio View'}</span>
+                        </button>
                       </div>
                     </div>
 
-                    {/* Bottom Profile Details Pill */}
-                    <div className="p-3 rounded-2xl bg-[#111111]/90 backdrop-blur-sm border border-white/10 text-left z-10">
+                    {/* Bottom Profile Details Panel */}
+                    <div className="p-3.5 bg-[#111111] border-t border-white/10 text-left z-10">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-black text-white">{profile.name}</span>
-                        <span className="text-[10px] font-bold text-[#F5A400]">BCA Graduate</span>
+                        <span className="text-sm font-black text-white tracking-tight">{profile.name}</span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#F5A400]/15 text-[#F5A400] border border-[#F5A400]/30 font-mono">
+                          BCA Graduate
+                        </span>
                       </div>
-                      <p className="text-[11px] text-stone-300 font-medium leading-tight mt-0.5">
+                      <p className="text-[11px] text-stone-300 font-medium leading-tight mt-1">
                         E-Commerce Operations & Digital Trading Specialist
                       </p>
                     </div>
