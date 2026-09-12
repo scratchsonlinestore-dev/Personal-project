@@ -67,7 +67,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F4EC] dark:bg-[#12110F] text-[#141311] dark:text-[#FAF6EE] transition-colors duration-200 selection:bg-[#FF9F0A]/30 selection:text-[#141311]">
+    <div className="min-h-screen bg-[#F4F2E8] dark:bg-[#111111] text-[#222222] dark:text-[#F4F2E8] transition-colors duration-200 selection:bg-[#F5A400]/30 selection:text-[#111111]">
       {/* Top floating pill navigation */}
       <Navbar
         profile={portfolioProfile}

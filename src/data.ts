@@ -186,10 +186,10 @@ export const experiencesData: Experience[] = [
     number: "03",
     role: "Data Analyst – E-Commerce Division",
     company: "Al Anees IT Solutions | Al Anees Qatar",
-    location: "Back Office, Kottakkal, Malappuram",
+    location: "Kottakkal, Malappuram (On-site)",
     type: "Full-time • On-site",
     period: "March 2023 – July 2024",
-    summary: "Worked full-time, on-site with the company's back-office team in Kottakkal, Malappuram, supporting e-commerce operations for Al Anees Qatar, a Qatar-based electronics retail and e-commerce business.",
+    summary: "Worked full-time, on-site with the operations team in Kottakkal, Malappuram, supporting e-commerce operations for Al Anees Qatar, a Qatar-based electronics retail and e-commerce business.",
     responsibilities: [
       {
         title: "Shopify Operations",

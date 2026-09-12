@@ -73,7 +73,7 @@ export function generateClientPDF() {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
   doc.setTextColor(40, 40, 40);
-  const summaryText = "E-commerce and marketplace operations professional with hands-on experience across Amazon, Flipkart, Meesho, Shopify and noon, covering catalog, pricing, promotions, inventory, marketing and performance reporting. Currently runs the complete e-commerce lifecycle as Founder of an independent online retail business — sourcing, vendor management, listings, pricing, Meta Ads, fulfilment, finance tracking and performance optimization — building strong commercial judgement and data-driven decision-making across functions. Previously worked full-time, on-site at a back-office team in Kottakkal, Malappuram, as a Data Analyst supporting a Qatar-based electronics retail and e-commerce business, managing Shopify listings, noon marketplace operations, campaign performance and price analysis. Seeking an e-commerce or marketplace operations role in the GCC where multi-platform operational experience can directly add value.";
+  const summaryText = "E-commerce and marketplace operations professional with hands-on experience across Amazon, Flipkart, Meesho, Shopify and noon, covering catalog, pricing, promotions, inventory, marketing and performance reporting. Currently runs the complete e-commerce lifecycle as Founder of an independent online retail business — sourcing, vendor management, listings, pricing, Meta Ads, fulfilment, finance tracking and performance optimization — building strong commercial judgement and data-driven decision-making across functions. Previously worked full-time, on-site in Kottakkal, Malappuram, as a Data Analyst supporting a Qatar-based electronics retail and e-commerce business, managing Shopify listings, noon marketplace operations, campaign performance and price analysis. Seeking an e-commerce or marketplace operations role in the GCC where multi-platform operational experience can directly add value.";
   const splitSummary = doc.splitTextToSize(summaryText, contentWidth);
   doc.text(splitSummary, margin, y);
   y += splitSummary.length * 11 + 4;
@@ -178,11 +178,11 @@ export function generateClientPDF() {
   doc.setFont('helvetica', 'italic');
   doc.setFontSize(8.5);
   doc.setTextColor(80, 80, 80);
-  doc.text('March 2023 – July 2024  |  Back Office, Kottakkal, Malappuram (Full-time, on-site)', margin, y);
+  doc.text('March 2023 – July 2024  |  Kottakkal, Malappuram (Full-time, on-site)', margin, y);
   y += 12;
 
   const role3Bullets = [
-    "Worked full-time, on-site at the company's back-office team in Kottakkal, Malappuram, supporting e-commerce operations for Al Anees Qatar, a Qatar-based electronics retail and e-commerce business.",
+    "Worked full-time, on-site with the operations team in Kottakkal, Malappuram, supporting e-commerce operations for Al Anees Qatar, a Qatar-based electronics retail and e-commerce business.",
     "Managed Phone Booth's Shopify store listings — product information, pricing and content updates — and noon marketplace listings.",
     "Supported campaign management, promotions and online merchandising across marketplace channels.",
     "Conducted price analysis, data filtering and sales/performance reporting to surface trends and commercial opportunities.",

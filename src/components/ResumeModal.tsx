@@ -35,11 +35,11 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
     >
       <div className="relative w-full max-w-4xl bg-white text-stone-900 rounded-3xl shadow-2xl overflow-hidden my-auto max-h-[94vh] flex flex-col animate-in fade-in zoom-in-95 duration-200 border border-stone-200">
         {/* Modal Toolbar (hidden when printing) */}
-        <div className="no-print p-4 sm:px-6 bg-[#EFECE3] dark:bg-[#141311] text-[#141311] dark:text-[#FAF6EE] border-b border-[#EDE7D9] dark:border-stone-800 flex flex-wrap items-center justify-between gap-3">
+        <div className="no-print p-4 sm:px-6 bg-[#171717] text-white border-b border-[#111111] flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#FF9F0A] animate-pulse"></span>
-            <span className="text-xs sm:text-sm font-bold text-[#141311] dark:text-[#FAF6EE]">
-              Official Curriculum Vitae — {profile.name}
+            <span className="w-2.5 h-2.5 rounded-full bg-[#F5A400] animate-pulse"></span>
+            <span className="text-xs sm:text-sm font-black text-white">
+              Curriculum Vitae — {profile.name}
             </span>
           </div>
 
@@ -48,7 +48,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
             <button
               type="button"
               onClick={handleDownload}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#FF9F0A] text-[#141311] hover:bg-[#ffaa2b] text-xs font-bold transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-sm"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#F5A400] text-[#111111] hover:bg-[#e59900] text-xs font-black transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-sm cursor-pointer"
               title="Download Arshad_TV_Resume.pdf"
             >
               <Download className="w-3.5 h-3.5" />
@@ -59,7 +59,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
             <button
               type="button"
               onClick={handlePrint}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white dark:bg-white/10 text-stone-700 dark:text-white border border-[#EDE7D9] dark:border-transparent hover:bg-stone-100 text-xs font-semibold transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/10 text-white border border-white/10 hover:bg-white/20 text-xs font-bold transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Print</span>
@@ -70,7 +70,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
               type="button"
               onClick={onClose}
               aria-label="Close CV modal"
-              className="p-2 rounded-full text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white hover:bg-stone-200/50 dark:hover:bg-white/10 transition-all duration-200 transform hover:scale-110 active:scale-90 cursor-pointer"
+              className="p-2 rounded-full text-stone-300 hover:text-white hover:bg-white/10 transition-all duration-200 transform hover:scale-110 active:scale-90 cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -120,7 +120,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
               Profile Summary
             </h3>
             <p className="text-xs sm:text-[13px] text-stone-700 leading-relaxed text-justify">
-              E-commerce and marketplace operations professional with hands-on experience across Amazon, Flipkart, Meesho, Shopify and noon, covering catalog, pricing, promotions, inventory, marketing and performance reporting. Currently runs the complete e-commerce lifecycle as Founder of an independent online retail business — sourcing, vendor management, listings, pricing, Meta Ads, fulfilment, finance tracking and performance optimization — building strong commercial judgement and data-driven decision-making across functions. Previously worked full-time, on-site at a back-office team in Kottakkal, Malappuram, as a Data Analyst supporting a Qatar-based electronics retail and e-commerce business, managing Shopify listings, noon marketplace operations, campaign performance and price analysis. Seeking an e-commerce or marketplace operations role in the GCC where multi-platform operational experience can directly add value.
+              E-commerce and marketplace operations professional with hands-on experience across Amazon, Flipkart, Meesho, Shopify and noon, covering catalog, pricing, promotions, inventory, marketing and performance reporting. Currently runs the complete e-commerce lifecycle as Founder of an independent online retail business — sourcing, vendor management, listings, pricing, Meta Ads, fulfilment, finance tracking and performance optimization — building strong commercial judgement and data-driven decision-making across functions. Previously worked full-time, on-site in Kottakkal, Malappuram, as a Data Analyst supporting a Qatar-based electronics retail and e-commerce business, managing Shopify listings, noon marketplace operations, campaign performance and price analysis. Seeking an e-commerce or marketplace operations role in the GCC where multi-platform operational experience can directly add value.
             </p>
           </div>
 
@@ -207,10 +207,10 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
                   </span>
                 </div>
                 <p className="text-[11px] italic text-stone-600">
-                  Back Office, Kottakkal, Malappuram (Full-time, on-site)
+                  Kottakkal, Malappuram (Full-time, on-site)
                 </p>
                 <ul className="list-disc list-outside pl-4 space-y-1 text-xs text-stone-700">
-                  <li>Worked full-time, on-site at the company&apos;s back-office team in Kottakkal, Malappuram, supporting e-commerce operations for Al Anees Qatar, a Qatar-based electronics retail and e-commerce business.</li>
+                  <li>Worked full-time, on-site with the operations team in Kottakkal, Malappuram, supporting e-commerce operations for Al Anees Qatar, a Qatar-based electronics retail and e-commerce business.</li>
                   <li>Managed Phone Booth&apos;s Shopify store listings — product information, pricing and content updates — and noon marketplace listings.</li>
                   <li>Supported campaign management, promotions and online merchandising across marketplace channels.</li>
                   <li>Conducted price analysis, data filtering and sales/performance reporting to surface trends and commercial opportunities.</li>

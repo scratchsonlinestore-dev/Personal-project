@@ -1,7 +1,30 @@
-import React from 'react';
-import { Download, ArrowUpRight, Mail, Phone, MessageSquare, Linkedin, Instagram, Facebook, Star, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  Download,
+  ArrowUpRight,
+  Mail,
+  Phone,
+  MessageSquare,
+  Linkedin,
+  Instagram,
+  Facebook,
+  Star,
+  Sparkles,
+  TrendingUp,
+  ShoppingBag,
+  Store,
+  CheckCircle2,
+  Layers,
+  BarChart3,
+  Globe,
+  ExternalLink,
+  ShieldCheck,
+  Zap
+} from 'lucide-react';
 import { Profile } from '../types';
 import { downloadOfficialResume } from '../utils/downloadCV';
+import arshadPortraitDark from '../assets/images/arshad_cutout_suit_1789200754490.jpg';
+import arshadPortraitHalf from '../assets/images/arshad_hero_half_1789200724915.jpg';
 
 interface HeroProps {
   profile: Profile;
@@ -10,183 +33,377 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenProjects }) => {
+  const [activePhoto, setActivePhoto] = useState<'dark' | 'half'>('dark');
+
   const handleDownloadCV = () => {
     downloadOfficialResume();
     onOpenResume();
   };
 
+  const currentPortrait = activePhoto === 'dark' ? arshadPortraitDark : arshadPortraitHalf;
+
   return (
-    <section id="home" className="pt-28 sm:pt-32 pb-16 md:pt-36 md:pb-20 overflow-hidden relative bg-[#F7F4EC] dark:bg-[#12110F]">
+    <section id="home" className="pt-28 sm:pt-32 pb-16 md:pt-36 md:pb-24 overflow-hidden relative bg-[#F4F2E8]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        {/* Top Centered Pill Badge */}
+        
+        {/* Top Centered Status Pill */}
         <div className="flex justify-center mb-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-[#181715] text-[#141311] dark:text-[#FAF6EE] border border-[#EDE7D9] dark:border-stone-800 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[#FF9F0A] animate-pulse"></span>
-            <span className="text-xs font-bold tracking-wide uppercase">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#111111] text-[#FFFFFF] border border-[#111111] shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-[#F5A400] animate-pulse"></span>
+            <span className="text-xs font-bold tracking-wider uppercase text-[#FFFFFF]">
               {profile.badge}
             </span>
           </div>
         </div>
 
-        {/* Main Hero Header Title */}
-        <div className="text-center max-w-4xl mx-auto mb-6">
+        {/* Main Large Typography Header */}
+        <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-12">
           <h1
             id="hero-heading"
-            className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#141311] dark:text-[#FAF6EE] leading-[1.08] font-sans"
+            className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight text-[#111111] leading-[1.05]"
           >
             I&apos;m{' '}
-            <span className="text-[#FF9F0A] relative inline-block">
+            <span className="text-[#F5A400] relative inline-block">
               {profile.name}
-              <span className="absolute -top-3 -right-5 text-xl text-[#FF9F0A]">✦</span>
+              <span className="text-[#F5A400] ml-1">✦</span>
             </span>
           </h1>
-          <p className="mt-3 text-lg sm:text-2xl font-bold text-stone-800 dark:text-stone-200">
+          <p className="mt-4 text-xl sm:text-2xl md:text-3xl font-extrabold text-[#222222] tracking-tight">
             {profile.tagline}
           </p>
-          <p className="text-xs sm:text-sm font-semibold tracking-wider uppercase text-stone-600 dark:text-stone-400 mt-2">
+          <p className="text-xs sm:text-sm font-bold tracking-widest uppercase text-[#777777] mt-3 max-w-2xl mx-auto">
             {profile.secondaryPositioning}
           </p>
         </div>
 
-        {/* Hero Showcase Centerpiece with Floating Pills and Rotating Stamp */}
-        <div className="relative max-w-4xl mx-auto my-8 sm:my-12">
-          {/* Rotating Stamp Badge in Top Right */}
-          <div className="absolute -top-6 -right-2 sm:-top-8 sm:right-6 z-20">
-            <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-white dark:bg-[#181715] text-[#141311] dark:text-white p-2 flex items-center justify-center shadow-xl border-2 border-[#FF9F0A]">
+        {/* Hero Showcase Centerpiece with Layered Website Panels & Personal Profile Photo */}
+        <div className="relative max-w-5xl mx-auto my-6 sm:my-10">
+
+          {/* Rotating Circular Stamp Badge */}
+          <div className="absolute -top-6 -right-2 sm:-top-8 sm:right-2 z-30 pointer-events-none">
+            <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-[#111111] text-[#FFFFFF] p-2 flex items-center justify-center shadow-2xl border-2 border-[#F5A400]">
               <svg className="w-full h-full animate-spin-slow" viewBox="0 0 100 100">
                 <path
                   id="stampPath"
                   d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
                   fill="none"
                 />
-                <text className="text-[9px] font-bold uppercase tracking-[2.5px] fill-[#141311] dark:fill-white">
+                <text className="text-[9.5px] font-black uppercase tracking-[2.6px] fill-[#FFFFFF]">
                   <textPath href="#stampPath" startOffset="0%">
                     ✦ OPEN TO WORK ✦ E-COMMERCE SPECIALIST ✦
                   </textPath>
                 </text>
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-8 h-8 rounded-full bg-[#FF9F0A] text-[#141311] flex items-center justify-center font-bold text-xs shadow-xs">
+                <div className="w-9 h-9 rounded-full bg-[#F5A400] text-[#111111] flex items-center justify-center font-black text-xs shadow-xs">
                   ATV
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Main Visual Center Card with Crisp White Backdrop Floating on Warm Canvas */}
-          <div className="relative rounded-3xl bg-white dark:bg-[#181715] p-6 sm:p-10 border border-[#EDE7D9] dark:border-stone-800 shadow-xl overflow-hidden">
-            {/* Background Decorative Rings */}
-            <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-[#FF9F0A]/5 pointer-events-none blur-3xl"></div>
+          {/* Small Floating Labels around the composition */}
+          <div className="hidden md:block absolute -top-4 left-4 z-30 animate-float-slow">
+            <div className="px-3.5 py-1.5 rounded-full bg-[#111111] text-[#FFFFFF] border border-[#111111] shadow-xl text-xs font-bold flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#F5A400]"></span>
+              <span>Amazon &amp; Flipkart Specialist</span>
+            </div>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center relative z-10">
-              {/* Left Column: Direct Social & Channels */}
-              <div className="md:col-span-4 space-y-6">
-                <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-600 dark:text-stone-400 block mb-2.5">
-                    Follow Me On
+          <div className="hidden md:block absolute -top-4 right-28 z-30 animate-float-reverse">
+            <div className="px-3.5 py-1.5 rounded-full bg-[#111111] text-[#FFFFFF] border border-[#111111] shadow-xl text-xs font-bold flex items-center gap-1.5">
+              <span className="text-[#F5A400]">✦</span>
+              <span>noon (GCC) Marketplace</span>
+            </div>
+          </div>
+
+          <div className="hidden lg:block absolute -bottom-5 left-8 z-30 animate-float-slow">
+            <div className="px-3.5 py-1.5 rounded-full bg-[#F5A400] text-[#111111] border border-[#111111] shadow-xl text-xs font-black flex items-center gap-1.5">
+              <span>✦</span>
+              <span>Amazon • Flipkart • noon • Meesho</span>
+            </div>
+          </div>
+
+          <div className="hidden lg:block absolute -bottom-5 right-8 z-30 animate-float-reverse">
+            <div className="px-3.5 py-1.5 rounded-full bg-[#FFFFFF] text-[#111111] border border-[#111111] shadow-lg text-xs font-black flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#25D366]"></span>
+              <span>Open to Relocation: GCC / Qatar</span>
+            </div>
+          </div>
+
+          {/* Main Card Container in Card Black (#171717) with Thin Black Border */}
+          <div className="relative rounded-3xl bg-[#171717] text-[#FFFFFF] p-6 sm:p-8 lg:p-10 border border-[#111111] shadow-2xl overflow-hidden">
+            
+            {/* Background Subtle Gradient Glow */}
+            <div className="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-[#F5A400]/10 pointer-events-none blur-3xl"></div>
+            <div className="absolute -left-24 -bottom-24 w-96 h-96 rounded-full bg-[#F5A400]/5 pointer-events-none blur-3xl"></div>
+
+            {/* Showcase Composition: Layered Panels & Central Profile Photo */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center relative z-10">
+              
+              {/* Left Column: Overlapping Website Panel (Shopify Store Ops) */}
+              <div className="lg:col-span-4 order-2 lg:order-1 flex flex-col justify-between h-full space-y-4">
+                {/* Layered Website Panel 1: Shopify E-Commerce Store */}
+                <div className="rounded-2xl bg-[#111111] border border-white/10 p-4 sm:p-5 shadow-xl transition-all duration-300 hover:scale-[1.02] transform lg:-rotate-1">
+                  {/* Browser Bar */}
+                  <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F56]"></span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]"></span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#27C93F]"></span>
+                    </div>
+                    <span className="text-[10px] font-mono text-stone-400 bg-white/5 px-2.5 py-0.5 rounded-md border border-white/5">
+                      scratchsmartbuilt.com
+                    </span>
+                    <Store className="w-3.5 h-3.5 text-[#F5A400]" />
+                  </div>
+
+                  {/* Panel Content */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#F5A400]"></span>
+                        <span className="text-xs font-bold text-white">Shopify Store Operations</span>
+                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F5A400] text-[#111111]">
+                        LIVE STORE
+                      </span>
+                    </div>
+
+                    {/* Stats Grid inside panel */}
+                    <div className="grid grid-cols-2 gap-2 text-left">
+                      <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                        <span className="text-[10px] text-stone-400 uppercase font-semibold block">
+                          Conversion Rate
+                        </span>
+                        <span className="text-sm font-black text-[#F5A400]">3.8% ↑</span>
+                      </div>
+                      <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                        <span className="text-[10px] text-stone-400 uppercase font-semibold block">
+                          Catalog Health
+                        </span>
+                        <span className="text-sm font-black text-white">100% Valid</span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-stone-300 leading-relaxed font-medium">
+                      End-to-end Shopify store build, Liquid theme styling, custom payment gateway integration and checkout optimization.
+                    </p>
+
+                    <div className="flex items-center gap-1.5 pt-1 text-[10px] text-stone-400 font-mono">
+                      <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/5">Liquid Themes</span>
+                      <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/5">Shopify CLI</span>
+                      <span className="px-2 py-0.5 rounded-md bg-white/5 border border-white/5">Meta Pixel</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Direct Social Channels Pill */}
+                <div className="p-3.5 rounded-2xl bg-[#111111] border border-white/10 flex items-center justify-between gap-2 shadow-lg">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400">
+                    Connect:
                   </span>
-                  {/* Social media icons grid with requested links */}
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex items-center gap-2">
                     <a
                       href={profile.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      title="LinkedIn: arshad-tv"
-                      className="w-9 h-9 rounded-full bg-stone-100 dark:bg-stone-800 text-[#0077b5] flex items-center justify-center hover:bg-[#0077b5] hover:text-white transition-all transform hover:scale-110 shadow-xs"
+                      title="LinkedIn Profile"
+                      className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#0077b5] text-white flex items-center justify-center transition-all hover:scale-110"
                     >
-                      <Linkedin className="w-4 h-4" />
+                      <Linkedin className="w-3.5 h-3.5" />
                     </a>
                     <a
                       href={profile.instagram}
                       target="_blank"
                       rel="noopener noreferrer"
-                      title="Instagram: @arshad_tv_777"
-                      className="w-9 h-9 rounded-full bg-stone-100 dark:bg-stone-800 text-[#E4405F] flex items-center justify-center hover:bg-[#E4405F] hover:text-white transition-all transform hover:scale-110 shadow-xs"
+                      title="Instagram Profile"
+                      className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#E4405F] text-white flex items-center justify-center transition-all hover:scale-110"
                     >
-                      <Instagram className="w-4 h-4" />
+                      <Instagram className="w-3.5 h-3.5" />
                     </a>
                     <a
                       href={profile.facebook}
                       target="_blank"
                       rel="noopener noreferrer"
-                      title="Facebook: arshad.tv"
-                      className="w-9 h-9 rounded-full bg-stone-100 dark:bg-stone-800 text-[#1877F2] flex items-center justify-center hover:bg-[#1877F2] hover:text-white transition-all transform hover:scale-110 shadow-xs"
+                      title="Facebook Profile"
+                      className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#1877F2] text-white flex items-center justify-center transition-all hover:scale-110"
                     >
-                      <Facebook className="w-4 h-4" />
+                      <Facebook className="w-3.5 h-3.5" />
                     </a>
                     <a
                       href={`https://wa.me/${profile.phone.replace(/[^0-9]/g, '')}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      title="WhatsApp: +91 6235944644"
-                      className="w-9 h-9 rounded-full bg-stone-100 dark:bg-stone-800 text-[#25D366] flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-all transform hover:scale-110 shadow-xs"
+                      title="WhatsApp Chat"
+                      className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#25D366] text-white flex items-center justify-center transition-all hover:scale-110"
                     >
-                      <MessageSquare className="w-4 h-4" />
+                      <MessageSquare className="w-3.5 h-3.5" />
                     </a>
                     <a
                       href={`mailto:${profile.email}`}
-                      title="Email: arshadtv777@gmail.com"
-                      className="w-9 h-9 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 flex items-center justify-center hover:bg-[#FF9F0A] hover:text-[#141311] transition-all transform hover:scale-110 shadow-xs"
+                      title="Direct Email"
+                      className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#F5A400] hover:text-[#111111] text-white flex items-center justify-center transition-all hover:scale-110"
                     >
-                      <Mail className="w-4 h-4" />
-                    </a>
-                    <a
-                      href={`tel:${profile.phone.replace(/\s+/g, '')}`}
-                      title="Phone: +91 6235944644"
-                      className="w-9 h-9 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 flex items-center justify-center hover:bg-[#FF9F0A] hover:text-[#141311] transition-all transform hover:scale-110 shadow-xs"
-                    >
-                      <Phone className="w-4 h-4" />
+                      <Mail className="w-3.5 h-3.5" />
                     </a>
                   </div>
-                </div>
-
-                {/* Rating & Trust Badge */}
-                <div className="p-4 rounded-2xl bg-[#F7F4EC] dark:bg-stone-900/80 border border-[#EDE7D9] dark:border-stone-800 shadow-2xs">
-                  <div className="flex items-center gap-1 text-[#FF9F0A] mb-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-[#FF9F0A]" />
-                    ))}
-                    <span className="text-xs font-extrabold text-[#141311] dark:text-white ml-1.5">
-                      5.0 Experience Rating
-                    </span>
-                  </div>
-                  <p className="text-xs font-semibold text-stone-600 dark:text-stone-300 leading-tight">
-                    End-to-end multi-channel operations across India & GCC marketplaces.
-                  </p>
                 </div>
               </div>
 
-              {/* Center Column: Highlight Summary & Actions */}
-              <div className="md:col-span-5 text-center md:text-left space-y-4">
-                <div className="p-5 rounded-2xl bg-[#F7F4EC] dark:bg-stone-900/80 border border-[#EDE7D9] dark:border-stone-800 shadow-xs space-y-3">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#FF9F0A] text-[#141311] uppercase tracking-wider">
-                      Operations Scope
-                    </span>
-                    <span className="text-xs font-bold text-stone-600 dark:text-stone-400">
-                      9-Step Framework
-                    </span>
+              {/* Central Column: PERSONAL HALF-SIZE PORTRAIT IN MAIN CANVAS AREA */}
+              <div className="lg:col-span-4 order-1 lg:order-2 flex flex-col items-center text-center">
+                <div className="relative group w-full max-w-[340px] sm:max-w-[360px]">
+                  
+                  {/* Decorative Amber Glow Behind Portrait */}
+                  <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-[#F5A400] via-[#F5A400]/40 to-transparent opacity-80 blur-lg group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+
+                  {/* Central Portrait Card Container */}
+                  <div className="relative h-[480px] sm:h-[510px] rounded-3xl bg-[#111111] border-2 border-[#F5A400] overflow-hidden shadow-2xl flex flex-col justify-between p-3.5 sm:p-4">
+                    
+                    {/* Actual Half-Size Portrait Image */}
+                    <div className="absolute inset-0 z-0 overflow-hidden">
+                      <img
+                        src={currentPortrait}
+                        alt={`${profile.name} - E-Commerce Operations & Digital Trading Specialist`}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover object-top filter contrast-[1.03] transition-transform duration-700 ease-out group-hover:scale-105"
+                      />
+                      {/* Top & Bottom Cinematic Gradient Overlays for High Legibility */}
+                      <div className="absolute inset-0 bg-gradient-to-b from-[#111111]/90 via-transparent to-[#111111] via-45% pointer-events-none"></div>
+                    </div>
+
+                    {/* Top Portrait Header Tags */}
+                    <div className="flex items-center justify-between z-10">
+                      <span className="px-3 py-1.5 rounded-full bg-[#111111]/85 backdrop-blur-md border border-white/15 text-[10px] font-black uppercase tracking-wider text-[#F5A400] flex items-center gap-1.5 shadow-md">
+                        <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse"></span>
+                        SPECIALIST
+                      </span>
+                      
+                      {/* Switchable Studio Portrait button */}
+                      <button
+                        type="button"
+                        onClick={() => setActivePhoto((prev) => (prev === 'dark' ? 'half' : 'dark'))}
+                        className="px-2.5 py-1.5 rounded-full bg-[#111111]/85 backdrop-blur-md border border-white/15 text-[10px] font-bold text-white hover:text-[#F5A400] transition-colors flex items-center gap-1.5 shadow-md cursor-pointer"
+                        title="Toggle Portrait View"
+                      >
+                        <Sparkles className="w-3 h-3 text-[#F5A400]" />
+                        <span>Founder @ Scratch</span>
+                      </button>
+                    </div>
+
+                    {/* Middle Subtle Floating Badge */}
+                    <div className="z-10 my-auto pointer-events-none flex justify-end">
+                      <span className="text-[10px] font-black tracking-widest uppercase px-2.5 py-1 rounded-full bg-[#111111]/75 backdrop-blur-md border border-white/10 text-white/90">
+                        ✦ EXECUTIVE PORTFOLIO
+                      </span>
+                    </div>
+
+                    {/* Bottom Profile Details Glass Panel */}
+                    <div className="p-3.5 sm:p-4 rounded-2xl bg-[#111111]/95 backdrop-blur-md border border-white/15 text-left z-10 shadow-2xl space-y-1">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="text-base sm:text-lg font-black text-white tracking-tight">
+                            {profile.name}
+                          </h3>
+                          <span className="w-4 h-4 rounded-full bg-[#F5A400] text-[#111111] flex items-center justify-center text-[10px] font-black shadow-xs">
+                            ✓
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-[#F5A400]/20 text-[#F5A400] border border-[#F5A400]/30">
+                          BCA Graduate
+                        </span>
+                      </div>
+                      <p className="text-xs text-stone-200 font-semibold leading-tight">
+                        E-Commerce Operations &amp; Digital Trading Specialist
+                      </p>
+                      <div className="pt-1.5 flex flex-wrap items-center gap-1.5 text-[10px] font-bold text-stone-300">
+                        <span className="px-2 py-0.5 rounded-md bg-white/10 text-white">4+ Yrs Experience</span>
+                        <span className="px-2 py-0.5 rounded-md bg-white/10 text-white">India &amp; GCC</span>
+                        <span className="px-2 py-0.5 rounded-md bg-[#25D366]/20 text-[#25D366] border border-[#25D366]/30">Open to Relocation</span>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed font-sans">
-                    {profile.intro[0]}
-                  </p>
                 </div>
 
-                {/* Pill Buttons as seen in the reference mockup */}
-                <div className="flex flex-wrap items-center gap-3 pt-2 justify-center md:justify-start">
+                {/* Experience Rating Pill beneath the portrait */}
+                <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#111111] border border-white/10 text-xs text-white shadow-md">
+                  <div className="flex items-center text-[#F5A400]">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3 h-3 fill-[#F5A400]" />
+                    ))}
+                  </div>
+                  <span className="font-bold text-white">5.0</span>
+                  <span className="text-stone-400 font-medium">• India &amp; GCC Operations</span>
+                </div>
+              </div>
+
+              {/* Right Column: Overlapping Website Panel (Multi-Channel Marketplaces) */}
+              <div className="lg:col-span-4 order-3 flex flex-col justify-between h-full space-y-4">
+                {/* Layered Website Panel 2: Marketplace Trading Hub */}
+                <div className="rounded-2xl bg-[#111111] border border-white/10 p-4 sm:p-5 shadow-xl transition-all duration-300 hover:scale-[1.02] transform lg:rotate-1">
+                  {/* Browser Bar */}
+                  <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F56]"></span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]"></span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#27C93F]"></span>
+                    </div>
+                    <span className="text-[10px] font-mono text-stone-400 bg-white/5 px-2.5 py-0.5 rounded-md border border-white/5">
+                      trading-hub.noon-gcc
+                    </span>
+                    <BarChart3 className="w-3.5 h-3.5 text-[#F5A400]" />
+                  </div>
+
+                  {/* Panel Content */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#F5A400]"></span>
+                        <span className="text-xs font-bold text-white">Marketplaces &amp; Ads</span>
+                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F5A400] text-[#111111]">
+                        4.2x ROAS
+                      </span>
+                    </div>
+
+                    {/* Metrics List */}
+                    <div className="space-y-2">
+                      <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
+                        <span className="text-xs text-stone-300 font-medium">Amazon &amp; Flipkart</span>
+                        <span className="text-xs font-black text-[#F5A400]">Full Sourcing</span>
+                      </div>
+                      <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
+                        <span className="text-xs text-stone-300 font-medium">noon Marketplace (GCC)</span>
+                        <span className="text-xs font-black text-white">Catalog &amp; FBN</span>
+                      </div>
+                      <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
+                        <span className="text-xs text-stone-300 font-medium">Meesho &amp; Regional</span>
+                        <span className="text-xs font-black text-white">High Volume</span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-stone-300 leading-relaxed font-medium">
+                      Multi-platform execution covering vendor procurement, keywords, margin calculations, and inventory fulfillment.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Primary Action Buttons Bar */}
+                <div className="flex flex-col sm:flex-row gap-2.5">
                   <button
                     type="button"
                     onClick={onOpenProjects}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#FF9F0A] text-[#141311] font-extrabold text-xs uppercase tracking-wider hover:bg-[#ffaa2b] shadow-md transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#F5A400] text-[#111111] font-black text-xs uppercase tracking-wider hover:bg-[#e59900] shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
                   >
-                    <span>Portfolio</span>
+                    <span>View Projects</span>
                     <ArrowUpRight className="w-4 h-4" />
                   </button>
 
                   <button
                     type="button"
                     onClick={handleDownloadCV}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white dark:bg-stone-800 text-[#141311] dark:text-white border border-stone-300 dark:border-stone-700 font-extrabold text-xs uppercase tracking-wider hover:bg-stone-100 dark:hover:bg-stone-700 shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#FFFFFF] text-[#111111] border border-[#111111] font-black text-xs uppercase tracking-wider hover:bg-[#E8E5D8] shadow-md transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
                     title="Download Arshad TV Resume (PDF)"
                   >
                     <span>Download CV</span>
@@ -194,40 +411,23 @@ export const Hero: React.FC<HeroProps> = ({ profile, onOpenResume, onOpenProject
                   </button>
                 </div>
               </div>
-
-              {/* Right Column: Floating Pill Tags */}
-              <div className="md:col-span-3 flex flex-col gap-2.5">
-                <div className="p-3 rounded-2xl bg-[#FF9F0A] text-[#141311] font-bold text-xs shadow-xs flex items-center justify-between hover:scale-105 transition-transform">
-                  <span>Shopify & Liquid</span>
-                  <span className="w-2 h-2 rounded-full bg-[#141311]"></span>
-                </div>
-                <div className="p-3 rounded-2xl bg-white dark:bg-stone-800 text-[#141311] dark:text-white font-bold text-xs shadow-xs border border-[#EDE7D9] dark:border-stone-700 flex items-center justify-between hover:scale-105 transition-transform">
-                  <span>Amazon & Flipkart</span>
-                  <span className="w-2 h-2 rounded-full bg-[#FF9F0A]"></span>
-                </div>
-                <div className="p-3 rounded-2xl bg-white dark:bg-stone-800 text-stone-900 dark:text-white font-bold text-xs shadow-xs border border-stone-200 dark:border-stone-700 flex items-center justify-between hover:scale-105 transition-transform">
-                  <span>Meta Ads & ROAS</span>
-                  <span className="w-2 h-2 rounded-full bg-[#FF9F0A]"></span>
-                </div>
-                <div className="p-3 rounded-2xl bg-[#FF9F0A] text-[#141311] font-bold text-xs shadow-xs flex items-center justify-between hover:scale-105 transition-transform">
-                  <span>noon Trading (GCC)</span>
-                  <span className="w-2 h-2 rounded-full bg-[#141311]"></span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Supporting Tags Row */}
-        <div className="flex flex-wrap items-center justify-center gap-2 max-w-3xl mx-auto text-center">
+        {/* Bottom Supporting Tags Row in warm off-white and black borders */}
+        <div className="flex flex-wrap items-center justify-center gap-2.5 max-w-4xl mx-auto text-center mt-8">
           {(profile.supportingKeywords || []).map((keyword) => (
             <span
               key={keyword}
-              className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-200 border border-[#EDE7D9] dark:border-stone-800 shadow-2xs hover:scale-105 transition-transform"
+              className="px-4 py-1.5 rounded-full text-xs font-bold bg-[#FFFFFF] text-[#222222] border border-[#111111] shadow-xs hover:bg-[#F5A400] hover:text-[#111111] transition-all hover:scale-105 cursor-default"
             >
               ✦ {keyword}
             </span>
           ))}
+          <span className="px-4 py-1.5 rounded-full text-xs font-bold bg-[#111111] text-[#FFFFFF] border border-[#111111] shadow-xs">
+            GCC & India Ready
+          </span>
         </div>
       </div>
     </section>
