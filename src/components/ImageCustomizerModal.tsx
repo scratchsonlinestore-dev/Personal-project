@@ -1,0 +1,895 @@
+import React, { useState, useRef } from 'react';
+import {
+  X,
+  Upload,
+  Image as ImageIcon,
+  Lock,
+  Unlock,
+  RotateCcw,
+  Check,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Maximize2,
+  Move,
+  Sliders,
+  Sparkles,
+  Info,
+  ShieldCheck,
+  Eye,
+  LogOut,
+} from 'lucide-react';
+import { HeroImageConfig } from '../types';
+import {
+  DEFAULT_HERO_IMAGE_CONFIG,
+  isOwnerAuthenticated,
+  setOwnerAuthenticated,
+  verifyOwnerCredentials,
+  saveHeroImageConfig,
+  resetHeroImageConfig,
+} from '../utils/imageConfig';
+
+interface ImageCustomizerModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  config: HeroImageConfig;
+  onUpdateConfig: (newConfig: HeroImageConfig) => void;
+}
+
+export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
+  isOpen,
+  onClose,
+  config,
+  onUpdateConfig,
+}) => {
+  // Authentication state
+  const [authenticated, setAuthenticated] = useState<boolean>(() => isOwnerAuthenticated());
+  const [usernameInput, setUsernameInput] = useState<string>('scratchsonlinestore@gmail.com');
+  const [passwordInput, setPasswordInput] = useState<string>('');
+  const [authError, setAuthError] = useState<string>('');
+  const [rememberMe, setRememberMe] = useState<boolean>(true);
+
+  // Active customizer tab
+  const [activeTab, setActiveTab] = useState<'upload' | 'alignment' | 'size' | 'position' | 'styling'>('upload');
+  const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
+
+  // File input ref
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [dragActive, setDragActive] = useState<boolean>(false);
+
+  if (!isOpen) return null;
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+
+    if (verifyOwnerCredentials(usernameInput, passwordInput)) {
+      setAuthenticated(true);
+      if (rememberMe) {
+        setOwnerAuthenticated(true);
+      }
+    } else {
+      setAuthError('Invalid credentials. Please enter the correct password (e.g. arshad2026 or admin).');
+    }
+  };
+
+  const handleLogout = () => {
+    setAuthenticated(false);
+    setOwnerAuthenticated(false);
+    setPasswordInput('');
+  };
+
+  const handleFileUpload = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file (PNG, JPG, JPEG, WEBP).');
+      return;
+    }
+
+    // Limit to 8MB
+    if (file.size > 8 * 1024 * 1024) {
+      alert('Image size exceeds 8MB. Please select a smaller photo.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      if (dataUrl) {
+        const updated = {
+          ...config,
+          imageUrl: dataUrl,
+          presetKey: 'custom' as const,
+        };
+        onUpdateConfig(updated);
+        saveHeroImageConfig(updated);
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 2000);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(false);
+  };
+
+  const handleReset = () => {
+    if (window.confirm('Reset hero image and positioning to factory default settings?')) {
+      const reset = resetHeroImageConfig();
+      onUpdateConfig(reset);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2000);
+    }
+  };
+
+  const handleSaveAndClose = () => {
+    saveHeroImageConfig(config);
+    onClose();
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md overflow-y-auto"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-2xl bg-[#171717] text-white rounded-3xl border border-white/20 shadow-2xl overflow-hidden my-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Modal Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#111111]">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#F5A400] text-[#111111] flex items-center justify-center font-black">
+              {authenticated ? <Unlock className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
+            </div>
+            <div>
+              <h2 className="text-base font-black tracking-tight text-white flex items-center gap-2">
+                Hero Image Customizer
+                <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-[#F5A400]/20 text-[#F5A400] border border-[#F5A400]/30">
+                  Owner Access
+                </span>
+              </h2>
+              <p className="text-xs text-stone-400">
+                {authenticated
+                  ? 'Adjust alignment, manual size, offsets, and upload custom images'
+                  : 'Enter owner credentials to access layout controls'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {authenticated && (
+              <button
+                type="button"
+                onClick={handleLogout}
+                title="Lock / Sign Out"
+                className="p-2 rounded-xl text-stone-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 rounded-xl text-stone-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Modal Body */}
+        {!authenticated ? (
+          /* STEP 1: CREDENTIAL ACCESS FORM */
+          <div className="p-6 sm:p-8 space-y-6">
+            <div className="p-4 rounded-2xl bg-[#222222] border border-white/10 flex items-start gap-3">
+              <ShieldCheck className="w-5 h-5 text-[#F5A400] shrink-0 mt-0.5" />
+              <div className="text-xs text-stone-300 space-y-1">
+                <p className="font-bold text-white">Protected Owner Control</p>
+                <p>
+                  This panel enables image uploads, left/right alignment, and precise sizing adjustments for Arshad TV.
+                </p>
+                <div className="pt-2 text-[11px] font-mono text-[#F5A400] bg-[#111111] p-2 rounded-lg border border-white/5">
+                  Hint: Email: <span className="text-white">scratchsonlinestore@gmail.com</span> | Password: <span className="text-white">arshad2026</span> (or <span className="text-white">admin</span>)
+                </div>
+              </div>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-stone-300 mb-1.5 uppercase tracking-wider">
+                  Owner Email or Username
+                </label>
+                <input
+                  type="text"
+                  value={usernameInput}
+                  onChange={(e) => setUsernameInput(e.target.value)}
+                  placeholder="scratchsonlinestore@gmail.com"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#111111] border border-white/15 text-white text-sm focus:outline-hidden focus:border-[#F5A400] transition-colors"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-stone-300 mb-1.5 uppercase tracking-wider">
+                  Security Password
+                </label>
+                <input
+                  type="password"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  placeholder="Enter arshad2026 or admin"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#111111] border border-white/15 text-white text-sm focus:outline-hidden focus:border-[#F5A400] transition-colors"
+                  autoFocus
+                  required
+                />
+              </div>
+
+              {authError && (
+                <div className="p-3 rounded-xl bg-red-950/50 border border-red-500/50 text-xs text-red-200">
+                  {authError}
+                </div>
+              )}
+
+              <div className="flex items-center justify-between pt-1">
+                <label className="flex items-center gap-2 text-xs text-stone-300 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="rounded-md border-white/20 text-[#F5A400] focus:ring-[#F5A400] bg-[#111111]"
+                  />
+                  <span>Remember session on this device</span>
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 rounded-full bg-[#F5A400] text-[#111111] font-black text-sm uppercase tracking-wider hover:bg-[#e59900] shadow-lg transition-transform active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Unlock className="w-4 h-4" />
+                <span>Unlock Image Controls</span>
+              </button>
+            </form>
+          </div>
+        ) : (
+          /* STEP 2: IMAGE CUSTOMIZATION DASHBOARD */
+          <div className="p-6 sm:p-8 space-y-6">
+            
+            {/* Customizer Tabs */}
+            <div className="flex flex-wrap gap-1.5 p-1 rounded-2xl bg-[#111111] border border-white/10">
+              <button
+                type="button"
+                onClick={() => setActiveTab('upload')}
+                className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  activeTab === 'upload'
+                    ? 'bg-[#F5A400] text-[#111111] shadow-xs'
+                    : 'text-stone-400 hover:text-white'
+                }`}
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Upload</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('alignment')}
+                className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  activeTab === 'alignment'
+                    ? 'bg-[#F5A400] text-[#111111] shadow-xs'
+                    : 'text-stone-400 hover:text-white'
+                }`}
+              >
+                <AlignLeft className="w-3.5 h-3.5" />
+                <span>Alignment</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('size')}
+                className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  activeTab === 'size'
+                    ? 'bg-[#F5A400] text-[#111111] shadow-xs'
+                    : 'text-stone-400 hover:text-white'
+                }`}
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span>Size</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('position')}
+                className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  activeTab === 'position'
+                    ? 'bg-[#F5A400] text-[#111111] shadow-xs'
+                    : 'text-stone-400 hover:text-white'
+                }`}
+              >
+                <Move className="w-3.5 h-3.5" />
+                <span>Position</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('styling')}
+                className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  activeTab === 'styling'
+                    ? 'bg-[#F5A400] text-[#111111] shadow-xs'
+                    : 'text-stone-400 hover:text-white'
+                }`}
+              >
+                <Sliders className="w-3.5 h-3.5" />
+                <span>Styling</span>
+              </button>
+            </div>
+
+            {/* TAB CONTENT */}
+            <div className="space-y-5">
+              
+              {/* TAB 1: UPLOAD & IMAGE SOURCE */}
+              {activeTab === 'upload' && (
+                <div className="space-y-5">
+                  <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
+                      dragActive
+                        ? 'border-[#F5A400] bg-[#F5A400]/10'
+                        : 'border-white/20 hover:border-[#F5A400] bg-[#111111]/70'
+                    }`}
+                  >
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleFileUpload(e.target.files[0]);
+                        }
+                      }}
+                    />
+                    <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 text-[#F5A400] mx-auto flex items-center justify-center mb-3">
+                      <Upload className="w-6 h-6" />
+                    </div>
+                    <p className="text-sm font-bold text-white mb-1">
+                      Click to upload or drag & drop image
+                    </p>
+                    <p className="text-xs text-stone-400">
+                      Supports PNG, JPG, JPEG, WEBP (up to 8MB)
+                    </p>
+                  </div>
+
+                  {/* Preset Selector */}
+                  <div>
+                    <span className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-2">
+                      Or Choose Preset Portrait:
+                    </span>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = {
+                            ...config,
+                            imageUrl: '/arshad-portrait.jpg',
+                            presetKey: 'studio' as const,
+                          };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all cursor-pointer ${
+                          config.presetKey === 'studio'
+                            ? 'border-[#F5A400] bg-[#F5A400]/10 text-white'
+                            : 'border-white/10 bg-[#111111] text-stone-300 hover:border-white/30'
+                        }`}
+                      >
+                        <img
+                          src="/arshad-portrait.jpg"
+                          alt="Studio"
+                          className="w-10 h-10 rounded-lg object-cover"
+                        />
+                        <div className="text-xs">
+                          <p className="font-bold">Studio Portrait</p>
+                          <p className="text-[10px] text-stone-400">Default Light</p>
+                        </div>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = {
+                            ...config,
+                            imageUrl: '/arshad-portrait-dark.jpg',
+                            presetKey: 'suit' as const,
+                          };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all cursor-pointer ${
+                          config.presetKey === 'suit'
+                            ? 'border-[#F5A400] bg-[#F5A400]/10 text-white'
+                            : 'border-white/10 bg-[#111111] text-stone-300 hover:border-white/30'
+                        }`}
+                      >
+                        <img
+                          src="/arshad-portrait-dark.jpg"
+                          alt="Suit"
+                          className="w-10 h-10 rounded-lg object-cover"
+                        />
+                        <div className="text-xs">
+                          <p className="font-bold">Dark Suit View</p>
+                          <p className="text-[10px] text-stone-400">Formal Studio</p>
+                        </div>
+                      </button>
+
+                      {config.presetKey === 'custom' && (
+                        <div className="p-2.5 rounded-xl border border-[#F5A400] bg-[#F5A400]/10 text-white flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 overflow-hidden">
+                            <img
+                              src={config.imageUrl}
+                              alt="Custom"
+                              className="w-10 h-10 rounded-lg object-cover shrink-0"
+                            />
+                            <div className="text-xs truncate">
+                              <p className="font-bold truncate">Custom Photo</p>
+                              <p className="text-[10px] text-stone-400">Uploaded</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 2: ALIGNMENT & LAYOUT */}
+              {activeTab === 'alignment' && (
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-2">
+                      Image Alignment Position
+                    </label>
+                    <div className="grid grid-cols-3 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = { ...config, alignment: 'left' as const };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className={`p-4 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center gap-2 ${
+                          config.alignment === 'left'
+                            ? 'border-[#F5A400] bg-[#F5A400]/15 text-white shadow-md'
+                            : 'border-white/10 bg-[#111111] text-stone-400 hover:text-white'
+                        }`}
+                      >
+                        <AlignLeft className="w-6 h-6 text-[#F5A400]" />
+                        <span className="text-xs font-black uppercase">Left Aligned</span>
+                        <span className="text-[10px] text-stone-400">Image on Left</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = { ...config, alignment: 'center' as const };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className={`p-4 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center gap-2 ${
+                          config.alignment === 'center'
+                            ? 'border-[#F5A400] bg-[#F5A400]/15 text-white shadow-md'
+                            : 'border-white/10 bg-[#111111] text-stone-400 hover:text-white'
+                        }`}
+                      >
+                        <AlignCenter className="w-6 h-6 text-[#F5A400]" />
+                        <span className="text-xs font-black uppercase">Center Aligned</span>
+                        <span className="text-[10px] text-stone-400">Image Centered</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = { ...config, alignment: 'right' as const };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className={`p-4 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center gap-2 ${
+                          config.alignment === 'right'
+                            ? 'border-[#F5A400] bg-[#F5A400]/15 text-white shadow-md'
+                            : 'border-white/10 bg-[#111111] text-stone-400 hover:text-white'
+                        }`}
+                      >
+                        <AlignRight className="w-6 h-6 text-[#F5A400]" />
+                        <span className="text-xs font-black uppercase">Right Aligned</span>
+                        <span className="text-[10px] text-stone-400">Image on Right</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Layout Arrangement Mode */}
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-2">
+                      Hero Arrangement Style
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = { ...config, layoutStyle: 'side-by-side' as const };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                          config.layoutStyle === 'side-by-side'
+                            ? 'border-[#F5A400] bg-[#F5A400]/10 text-white'
+                            : 'border-white/10 bg-[#111111] text-stone-400'
+                        }`}
+                      >
+                        <p className="text-xs font-bold text-white">Side-by-Side (Desktop)</p>
+                        <p className="text-[11px] text-stone-400">Text & image adjacent columns</p>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = { ...config, layoutStyle: 'stacked' as const };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                          config.layoutStyle === 'stacked'
+                            ? 'border-[#F5A400] bg-[#F5A400]/10 text-white'
+                            : 'border-white/10 bg-[#111111] text-stone-400'
+                        }`}
+                      >
+                        <p className="text-xs font-bold text-white">Stacked Vertically</p>
+                        <p className="text-[11px] text-stone-400">Full-width centered flow</p>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: MANUALLY SIZE ADJUST */}
+              {activeTab === 'size' && (
+                <div className="space-y-5">
+                  {/* Width slider */}
+                  <div className="p-4 rounded-2xl bg-[#111111] border border-white/10 space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-white">Image Width:</span>
+                      <span className="font-mono text-[#F5A400] font-bold">{config.width}px</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={220}
+                      max={680}
+                      step={10}
+                      value={config.width}
+                      onChange={(e) => {
+                        const updated = { ...config, width: Number(e.target.value) };
+                        onUpdateConfig(updated);
+                        saveHeroImageConfig(updated);
+                      }}
+                      className="w-full accent-[#F5A400] cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[10px] text-stone-500 font-mono">
+                      <span>220px (Compact)</span>
+                      <span>380px (Standard)</span>
+                      <span>680px (Wide)</span>
+                    </div>
+                  </div>
+
+                  {/* Height slider */}
+                  <div className="p-4 rounded-2xl bg-[#111111] border border-white/10 space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-white">Image Height:</span>
+                      <span className="font-mono text-[#F5A400] font-bold">{config.height}px</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={260}
+                      max={680}
+                      step={10}
+                      value={config.height}
+                      onChange={(e) => {
+                        const updated = { ...config, height: Number(e.target.value) };
+                        onUpdateConfig(updated);
+                        saveHeroImageConfig(updated);
+                      }}
+                      className="w-full accent-[#F5A400] cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[10px] text-stone-500 font-mono">
+                      <span>260px (Square/Short)</span>
+                      <span>470px (Half Portrait)</span>
+                      <span>680px (Tall)</span>
+                    </div>
+                  </div>
+
+                  {/* Scale Multiplier */}
+                  <div className="p-4 rounded-2xl bg-[#111111] border border-white/10 space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-white">Overall Scale:</span>
+                      <span className="font-mono text-[#F5A400] font-bold">{(config.scale * 100).toFixed(0)}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0.7}
+                      max={1.3}
+                      step={0.05}
+                      value={config.scale}
+                      onChange={(e) => {
+                        const updated = { ...config, scale: Number(e.target.value) };
+                        onUpdateConfig(updated);
+                        saveHeroImageConfig(updated);
+                      }}
+                      className="w-full accent-[#F5A400] cursor-pointer"
+                    />
+                  </div>
+
+                  {/* Corner Border Radius */}
+                  <div className="p-4 rounded-2xl bg-[#111111] border border-white/10 space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-white">Corner Rounding:</span>
+                      <span className="font-mono text-[#F5A400] font-bold">{config.borderRadius}px</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={48}
+                      step={4}
+                      value={config.borderRadius}
+                      onChange={(e) => {
+                        const updated = { ...config, borderRadius: Number(e.target.value) };
+                        onUpdateConfig(updated);
+                        saveHeroImageConfig(updated);
+                      }}
+                      className="w-full accent-[#F5A400] cursor-pointer"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 4: MANUALLY POSITION ADJUST */}
+              {activeTab === 'position' && (
+                <div className="space-y-5">
+                  {/* Horizontal Offset X */}
+                  <div className="p-4 rounded-2xl bg-[#111111] border border-white/10 space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-white">Horizontal Offset (X-Axis):</span>
+                      <span className="font-mono text-[#F5A400] font-bold">{config.offsetX}px</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={-150}
+                      max={150}
+                      step={5}
+                      value={config.offsetX}
+                      onChange={(e) => {
+                        const updated = { ...config, offsetX: Number(e.target.value) };
+                        onUpdateConfig(updated);
+                        saveHeroImageConfig(updated);
+                      }}
+                      className="w-full accent-[#F5A400] cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[10px] text-stone-500 font-mono">
+                      <span>-150px (Shift Left)</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = { ...config, offsetX: 0 };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className="text-[#F5A400] hover:underline"
+                      >
+                        Reset 0px
+                      </button>
+                      <span>+150px (Shift Right)</span>
+                    </div>
+                  </div>
+
+                  {/* Vertical Offset Y */}
+                  <div className="p-4 rounded-2xl bg-[#111111] border border-white/10 space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-white">Vertical Offset (Y-Axis):</span>
+                      <span className="font-mono text-[#F5A400] font-bold">{config.offsetY}px</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={-100}
+                      max={100}
+                      step={5}
+                      value={config.offsetY}
+                      onChange={(e) => {
+                        const updated = { ...config, offsetY: Number(e.target.value) };
+                        onUpdateConfig(updated);
+                        saveHeroImageConfig(updated);
+                      }}
+                      className="w-full accent-[#F5A400] cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[10px] text-stone-500 font-mono">
+                      <span>-100px (Shift Up)</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = { ...config, offsetY: 0 };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className="text-[#F5A400] hover:underline"
+                      >
+                        Reset 0px
+                      </button>
+                      <span>+100px (Shift Down)</span>
+                    </div>
+                  </div>
+
+                  {/* Object Position Focus (Focal Point Y) */}
+                  <div className="p-4 rounded-2xl bg-[#111111] border border-white/10 space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-white">Photo Focal Focus (Top to Bottom):</span>
+                      <span className="font-mono text-[#F5A400] font-bold">{config.objectPositionY}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={100}
+                      step={5}
+                      value={config.objectPositionY}
+                      onChange={(e) => {
+                        const updated = { ...config, objectPositionY: Number(e.target.value) };
+                        onUpdateConfig(updated);
+                        saveHeroImageConfig(updated);
+                      }}
+                      className="w-full accent-[#F5A400] cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[10px] text-stone-500 font-mono">
+                      <span>0% (Head/Hair Focus)</span>
+                      <span>50% (Center)</span>
+                      <span>100% (Torso)</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 5: STYLING & BADGE */}
+              {activeTab === 'styling' && (
+                <div className="space-y-5">
+                  {/* Shadow Style */}
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-2">
+                      Drop Shadow Style
+                    </label>
+                    <div className="grid grid-cols-4 gap-2">
+                      {(['none', 'soft', 'deep', 'amber'] as const).map((shadowOpt) => (
+                        <button
+                          key={shadowOpt}
+                          type="button"
+                          onClick={() => {
+                            const updated = { ...config, shadow: shadowOpt };
+                            onUpdateConfig(updated);
+                            saveHeroImageConfig(updated);
+                          }}
+                          className={`p-3 rounded-xl border text-center capitalize text-xs font-bold transition-all cursor-pointer ${
+                            config.shadow === shadowOpt
+                              ? 'border-[#F5A400] bg-[#F5A400]/15 text-white'
+                              : 'border-white/10 bg-[#111111] text-stone-400'
+                          }`}
+                        >
+                          {shadowOpt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Border Accent */}
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-2">
+                      Card Border Accent
+                    </label>
+                    <div className="grid grid-cols-4 gap-2">
+                      {(['none', 'thin', 'amber', 'bold'] as const).map((borderOpt) => (
+                        <button
+                          key={borderOpt}
+                          type="button"
+                          onClick={() => {
+                            const updated = { ...config, border: borderOpt };
+                            onUpdateConfig(updated);
+                            saveHeroImageConfig(updated);
+                          }}
+                          className={`p-3 rounded-xl border text-center capitalize text-xs font-bold transition-all cursor-pointer ${
+                            config.border === borderOpt
+                              ? 'border-[#F5A400] bg-[#F5A400]/15 text-white'
+                              : 'border-white/10 bg-[#111111] text-stone-400'
+                          }`}
+                        >
+                          {borderOpt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Status Badge Toggle */}
+                  <div className="p-4 rounded-2xl bg-[#111111] border border-white/10 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-white">Show Status Badge Over Photo</span>
+                      <input
+                        type="checkbox"
+                        checked={config.showBadge}
+                        onChange={(e) => {
+                          const updated = { ...config, showBadge: e.target.checked };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className="rounded text-[#F5A400] focus:ring-[#F5A400] w-4 h-4"
+                      />
+                    </div>
+                    {config.showBadge && (
+                      <input
+                        type="text"
+                        value={config.badgeText}
+                        onChange={(e) => {
+                          const updated = { ...config, badgeText: e.target.value };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        placeholder="e.g. Founder @ Scratch"
+                        className="w-full px-3 py-2 rounded-xl bg-[#1c1c1c] border border-white/15 text-xs text-white"
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+
+            </div>
+
+            {/* Modal Bottom Actions */}
+            <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={handleReset}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-stone-300 text-xs font-bold border border-white/10 transition-colors cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset to Factory Defaults</span>
+              </button>
+
+              <div className="flex items-center gap-2.5 w-full sm:w-auto">
+                {saveSuccess && (
+                  <span className="text-xs text-[#25D366] font-bold flex items-center gap-1">
+                    <Check className="w-3.5 h-3.5" /> Saved!
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={handleSaveAndClose}
+                  className="flex-1 sm:flex-none px-6 py-2.5 rounded-full bg-[#F5A400] text-[#111111] font-black text-xs uppercase tracking-wider hover:bg-[#e59900] shadow-md transition-transform active:scale-95 cursor-pointer"
+                >
+                  Save & Close
+                </button>
+              </div>
+            </div>
+
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

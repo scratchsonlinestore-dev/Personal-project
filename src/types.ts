@@ -62,6 +62,25 @@ export interface CareerStep {
   description: string;
 }
 
+export interface HeroImageConfig {
+  imageUrl: string;
+  presetKey: 'custom' | 'studio' | 'suit';
+  alignment: 'left' | 'center' | 'right';
+  layoutStyle: 'side-by-side' | 'stacked';
+  width: number;
+  height: number;
+  scale: number;
+  borderRadius: number;
+  offsetX: number;
+  offsetY: number;
+  objectFit: 'cover' | 'contain';
+  objectPositionY: number; // 0 to 100%
+  shadow: 'none' | 'soft' | 'deep' | 'amber';
+  border: 'none' | 'thin' | 'amber' | 'bold';
+  showBadge: boolean;
+  badgeText: string;
+}
+
 export interface ExpertiseItem {
   id: string;
   number: string;

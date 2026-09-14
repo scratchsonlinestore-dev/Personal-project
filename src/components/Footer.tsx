@@ -1,12 +1,13 @@
 import React from 'react';
-import { ArrowUp, Mail, Phone, MapPin, Linkedin, Instagram, Facebook } from 'lucide-react';
+import { ArrowUp, Mail, Phone, MapPin, Linkedin, Instagram, Facebook, Lock } from 'lucide-react';
 import { Profile } from '../types';
 
 interface FooterProps {
   profile: Profile;
+  onOpenCustomizer?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ profile }) => {
+export const Footer: React.FC<FooterProps> = ({ profile, onOpenCustomizer }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -125,15 +126,29 @@ export const Footer: React.FC<FooterProps> = ({ profile }) => {
             © {new Date().getFullYear()} {profile.name}. All rights reserved. Built with precision for e-commerce excellence.
           </p>
 
-          <button
-            type="button"
-            onClick={scrollToTop}
-            aria-label="Scroll back to top"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#171717] hover:bg-[#F5A400] hover:text-[#111111] text-white font-bold border border-white/10 shadow-xs transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
-          >
-            <span>Back to top</span>
-            <ArrowUp className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex items-center gap-3">
+            {onOpenCustomizer && (
+              <button
+                type="button"
+                onClick={onOpenCustomizer}
+                title="Credential Access: Customize Hero Image, Alignment & Size"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-[#F5A400] hover:text-[#111111] text-stone-300 font-bold border border-white/10 transition-colors cursor-pointer"
+              >
+                <Lock className="w-3 h-3 text-[#F5A400]" />
+                <span>Owner Image Access</span>
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={scrollToTop}
+              aria-label="Scroll back to top"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#171717] hover:bg-[#F5A400] hover:text-[#111111] text-white font-bold border border-white/10 shadow-xs transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              <span>Back to top</span>
+              <ArrowUp className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
     </footer>

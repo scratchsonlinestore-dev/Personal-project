@@ -14,6 +14,7 @@ import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { ProjectModal } from './components/ProjectModal';
 import { ResumeModal } from './components/ResumeModal';
+import { ImageCustomizerModal } from './components/ImageCustomizerModal';
 import {
   portfolioProfile,
   experiencesData,
@@ -25,7 +26,8 @@ import {
   workApproachSteps,
   whyChooseMePoints,
 } from './data';
-import { ProjectItem } from './types';
+import { ProjectItem, HeroImageConfig } from './types';
+import { getSavedHeroImageConfig } from './utils/imageConfig';
 
 export default function App() {
   // Theme state: Default to off-white light theme
@@ -45,6 +47,10 @@ export default function App() {
 
   // CV modal
   const [isResumeOpen, setIsResumeOpen] = useState<boolean>(false);
+
+  // Hero Image Customizer Modal & Config
+  const [heroImageConfig, setHeroImageConfig] = useState<HeroImageConfig>(() => getSavedHeroImageConfig());
+  const [isCustomizerOpen, setIsCustomizerOpen] = useState<boolean>(false);
 
   // Synchronize dark theme class on document element
   useEffect(() => {
@@ -83,6 +89,8 @@ export default function App() {
           profile={portfolioProfile}
           onOpenResume={() => setIsResumeOpen(true)}
           onOpenProjects={scrollToProjects}
+          imageConfig={heroImageConfig}
+          onOpenCustomizer={() => setIsCustomizerOpen(true)}
         />
 
         {/* Signature Reference Marquee Ticker 1 */}
@@ -140,8 +148,11 @@ export default function App() {
         <ContactSection profile={portfolioProfile} />
       </main>
 
-      {/* 16. Footer */}
-      <Footer profile={portfolioProfile} />
+      {/* 16. Footer with Owner Image Access */}
+      <Footer
+        profile={portfolioProfile}
+        onOpenCustomizer={() => setIsCustomizerOpen(true)}
+      />
 
       {/* Modals */}
       <ProjectModal
@@ -156,6 +167,14 @@ export default function App() {
         experiences={experiencesData}
         projects={projectsData}
         skills={skillsCategoriesData}
+      />
+
+      {/* Credential-Protected Owner Hero Image Customizer Modal */}
+      <ImageCustomizerModal
+        isOpen={isCustomizerOpen}
+        onClose={() => setIsCustomizerOpen(false)}
+        config={heroImageConfig}
+        onUpdateConfig={(newConfig) => setHeroImageConfig(newConfig)}
       />
     </div>
   );
