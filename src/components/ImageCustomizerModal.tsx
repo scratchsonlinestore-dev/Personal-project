@@ -543,7 +543,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                       </p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
                       <button
                         type="button"
                         onClick={() => {
@@ -551,6 +551,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                             ...config,
                             showFrame: false,
                             showTextOverlay: false,
+                            showBottomActionPill: false,
                             objectFit: 'contain' as const,
                             border: 'none' as const,
                             shadow: 'none' as const,
@@ -559,19 +560,51 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                           saveHeroImageConfig(updated);
                         }}
                         className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
-                          !config.showFrame
+                          !config.showFrame && !config.showBottomActionPill
                             ? 'border-[#25D366] bg-[#25D366]/15 text-white shadow-sm'
                             : 'border-white/10 bg-[#171717] text-stone-400 hover:text-white'
                         }`}
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-black text-[#25D366] flex items-center gap-1">
-                            ✨ Transparent Cutout (No Frame, No Text)
+                            ✨ Transparent Cutout
                           </span>
-                          {!config.showFrame && <Check className="w-4 h-4 text-[#25D366]" />}
+                          {!config.showFrame && !config.showBottomActionPill && <Check className="w-4 h-4 text-[#25D366]" />}
                         </div>
                         <p className="text-[11px] text-stone-300 leading-snug">
-                          No black background card, no borders, and no text. Displays transparent PNG/WEBP directly on the page background.
+                          No frame, no borders, clean transparent photo.
+                        </p>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = {
+                            ...config,
+                            showFrame: false,
+                            showTextOverlay: false,
+                            showBottomActionPill: true,
+                            objectFit: 'contain' as const,
+                            border: 'none' as const,
+                            shadow: 'none' as const,
+                          };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
+                          !config.showFrame && config.showBottomActionPill
+                            ? 'border-[#F5A400] bg-[#F5A400]/20 text-white shadow-sm ring-1 ring-[#F5A400]'
+                            : 'border-white/10 bg-[#171717] text-stone-400 hover:text-white'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-[#F5A400] flex items-center gap-1">
+                            💊 Cutout + Action Pill
+                          </span>
+                          {!config.showFrame && config.showBottomActionPill && <Check className="w-4 h-4 text-[#F5A400]" />}
+                        </div>
+                        <p className="text-[11px] text-stone-300 leading-snug">
+                          Covers bottom image cutoff with [Portfolio ↗] [Hire Me] buttons.
                         </p>
                       </button>
 
@@ -582,6 +615,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                             ...config,
                             showFrame: true,
                             showTextOverlay: true,
+                            showBottomActionPill: false,
                             objectFit: 'cover' as const,
                             border: 'thin' as const,
                             shadow: 'deep' as const,
@@ -597,17 +631,17 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-black text-[#F5A400] flex items-center gap-1">
-                            🃏 Framed Card (Dark Background + Text)
+                            🃏 Framed Card
                           </span>
                           {config.showFrame && <Check className="w-4 h-4 text-[#F5A400]" />}
                         </div>
                         <p className="text-[11px] text-stone-300 leading-snug">
-                          Dark card container with status badge, name title, 5.0 star rating, and platform icons.
+                          Dark card container with status badge &amp; text overlay.
                         </p>
                       </button>
                     </div>
 
-                    {/* Fine-grain toggles */}
+                    {/* Fine-grain toggles below buttons */}
                     <div className="pt-2 border-t border-white/10 flex flex-wrap gap-4 text-xs">
                       <label className="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-white">
                         <input
@@ -620,7 +654,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                           }}
                           className="rounded text-[#F5A400] focus:ring-[#F5A400] w-4 h-4"
                         />
-                        <span>Show Card Frame & Dark Background</span>
+                        <span>Show Card Frame &amp; Dark Background</span>
                       </label>
 
                       <label className="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-white">
@@ -634,8 +668,65 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                           }}
                           className="rounded text-[#F5A400] focus:ring-[#F5A400] w-4 h-4"
                         />
-                        <span>Show Text Overlays (Name, 5.0 Rating, Tags)</span>
+                        <span>Show Text Overlays (Name, Rating, Tags)</span>
                       </label>
+                    </div>
+
+                    {/* Option requested: Cover Image Bottom Area with 2 Buttons (Reference Image 2 & 3) */}
+                    <div className="pt-2 border-t border-white/10">
+                      <div className="p-3.5 rounded-xl bg-[#171717] border border-white/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="space-y-1">
+                          <label className="flex items-center gap-2 cursor-pointer text-white font-bold text-xs">
+                            <input
+                              type="checkbox"
+                              checked={config.showBottomActionPill === true}
+                              onChange={(e) => {
+                                const updated = { ...config, showBottomActionPill: e.target.checked };
+                                onUpdateConfig(updated);
+                                saveHeroImageConfig(updated);
+                              }}
+                              className="rounded text-[#F5A400] focus:ring-[#F5A400] w-4 h-4"
+                            />
+                            <span className="flex items-center gap-2">
+                              <span>Cover Image Bottom Area with Action Pill</span>
+                              <span className="px-2 py-0.5 rounded-full bg-[#F5A400]/20 text-[#F5A400] text-[10px] font-black">
+                                Reference Image 2
+                              </span>
+                            </span>
+                          </label>
+                          <p className="text-[11px] text-stone-400 pl-6">
+                            Covers the photo&apos;s bottom cutoff area (Reference Image 3) with floating &quot;Portfolio ↗&quot; &amp; &quot;Hire Me&quot; buttons.
+                          </p>
+                        </div>
+
+                        {/* Live Pill Preview Component */}
+                        <div className="flex items-center gap-2.5 pl-6 sm:pl-0">
+                          <div className="inline-flex items-center p-0.5 rounded-full bg-[#fdfaf2] border border-white/50 shadow-sm gap-0.5 pointer-events-none">
+                            <span className="flex items-center gap-1 pl-2.5 pr-1.5 py-1 rounded-full bg-[#F5A400] text-[#111111] font-black text-[10px]">
+                              <span>Portfolio</span>
+                              <span className="w-3.5 h-3.5 rounded-full bg-[#111111] text-white flex items-center justify-center text-[8px] font-black">↗</span>
+                            </span>
+                            <span className="px-2.5 py-1 rounded-full bg-white text-[#111111] font-extrabold text-[10px]">
+                              Hire Me
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = { ...config, showBottomActionPill: !config.showBottomActionPill };
+                              onUpdateConfig(updated);
+                              saveHeroImageConfig(updated);
+                            }}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                              config.showBottomActionPill
+                                ? 'bg-[#F5A400] text-[#111111]'
+                                : 'bg-white/10 text-stone-300 hover:bg-white/20'
+                            }`}
+                          >
+                            {config.showBottomActionPill ? 'Active ✓' : 'Turn On'}
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Quick link to Icons tab */}

@@ -135,23 +135,57 @@ export const Hero: React.FC<HeroProps> = ({
             }}
           />
 
-          {/* Bottom subtle gradient scrim (only when framed and text overlay is enabled) */}
-          {isTextOverlayVisible && (
+          {/* Bottom subtle gradient scrim (only when framed and text overlay is enabled and bottom action pill not covering) */}
+          {isTextOverlayVisible && !imageConfig.showBottomActionPill && (
             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#111111] via-[#111111]/60 to-transparent pointer-events-none"></div>
           )}
 
-          {/* Bottom Card Title (only when framed and text overlay is enabled) */}
-          {isTextOverlayVisible && (
+          {/* Bottom Card Title (only when framed and text overlay is enabled and bottom action pill not covering) */}
+          {isTextOverlayVisible && !imageConfig.showBottomActionPill && (
             <div className="absolute inset-x-0 bottom-0 p-3.5 z-10 text-left bg-gradient-to-t from-[#111111] to-transparent">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-black text-white">{profile.name}</span>
                 <span className="text-[10px] font-bold text-[#F5A400] flex items-center gap-1">
-                  <Star className="w-3 h-3 fill-[#F5A400]" /> 5.0 Rated
+                  5.0 Rated
                 </span>
               </div>
               <p className="text-[11px] text-stone-300 font-medium leading-tight mt-0.5">
                 Shopify • Amazon • Flipkart • Meesho • noon
               </p>
+            </div>
+          )}
+
+          {/* Floating Dual-Button Action Pill covering image bottom area (Reference Image 2 & 3) */}
+          {imageConfig.showBottomActionPill && (
+            <div className="absolute bottom-4 inset-x-0 flex justify-center z-30 pointer-events-auto px-2">
+              <div className="inline-flex items-center p-1 rounded-full bg-[#fdfaf2]/90 backdrop-blur-md border border-white/60 shadow-[0_8px_25px_rgba(0,0,0,0.18)] gap-1">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenProjects();
+                    const el = document.getElementById('projects');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="flex items-center gap-1.5 pl-3.5 pr-2 py-1.5 rounded-full bg-[#F5A400] text-[#111111] font-black text-xs hover:bg-[#e59900] shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  <span>Portfolio</span>
+                  <span className="w-4 h-4 rounded-full bg-[#111111] text-white flex items-center justify-center text-[10px] font-black leading-none">
+                    ↗
+                  </span>
+                </button>
+                <a
+                  href="#contact"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const el = document.getElementById('contact');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-3.5 py-1.5 rounded-full bg-white text-[#111111] font-extrabold text-xs hover:bg-stone-50 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-2xs border border-black/5"
+                >
+                  Hire Me
+                </a>
+              </div>
             </div>
           )}
         </div>
@@ -174,14 +208,13 @@ export const Hero: React.FC<HeroProps> = ({
           </div>
         </div>
 
-        {/* Main Title */}
+        {/* Main Title: I'm Arshad TV with Arshad in yellow, no star */}
         <div>
           <h1
             id="hero-heading"
             className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight text-[#111111] leading-[1.08]"
           >
-            I&apos;m {profile.name}
-            <span className="text-[#F5A400] ml-2">✦</span>
+            I&apos;m <span className="text-[#F5A400]">Arshad</span> TV
           </h1>
           <p className="mt-3 text-xl sm:text-2xl font-extrabold text-[#222222] tracking-tight">
             {profile.tagline}

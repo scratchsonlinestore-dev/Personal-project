@@ -81,6 +81,7 @@ export interface HeroImageConfig {
   badgeText: string;
   showFrame: boolean;
   showTextOverlay: boolean;
+  showBottomActionPill?: boolean;
   brandIconType?: 'text' | 'image';
   brandIconText?: string;
   brandIconUrl?: string;
