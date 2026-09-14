@@ -456,6 +456,114 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                       )}
                     </div>
                   </div>
+
+                  {/* FRAME & TEXT OVERLAY DISPLAY MODE (TRANSPARENT VS FRAMED) */}
+                  <div className="p-4 rounded-2xl bg-[#111111] border border-white/15 space-y-3">
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-[#F5A400]" />
+                        <span>Background & Frame Options</span>
+                      </h4>
+                      <p className="text-[11px] text-stone-400 mt-0.5">
+                        Remove card frame and text overlay so transparent background photos display 100% transparently.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = {
+                            ...config,
+                            showFrame: false,
+                            showTextOverlay: false,
+                            objectFit: 'contain' as const,
+                            border: 'none' as const,
+                            shadow: 'none' as const,
+                          };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
+                          !config.showFrame
+                            ? 'border-[#25D366] bg-[#25D366]/15 text-white shadow-sm'
+                            : 'border-white/10 bg-[#171717] text-stone-400 hover:text-white'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-[#25D366] flex items-center gap-1">
+                            ✨ Transparent Cutout (No Frame, No Text)
+                          </span>
+                          {!config.showFrame && <Check className="w-4 h-4 text-[#25D366]" />}
+                        </div>
+                        <p className="text-[11px] text-stone-300 leading-snug">
+                          No black background card, no borders, and no text. Displays transparent PNG/WEBP directly on the page background.
+                        </p>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = {
+                            ...config,
+                            showFrame: true,
+                            showTextOverlay: true,
+                            objectFit: 'cover' as const,
+                            border: 'thin' as const,
+                            shadow: 'deep' as const,
+                          };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
+                          config.showFrame
+                            ? 'border-[#F5A400] bg-[#F5A400]/15 text-white shadow-sm'
+                            : 'border-white/10 bg-[#171717] text-stone-400 hover:text-white'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-[#F5A400] flex items-center gap-1">
+                            🃏 Framed Card (Dark Background + Text)
+                          </span>
+                          {config.showFrame && <Check className="w-4 h-4 text-[#F5A400]" />}
+                        </div>
+                        <p className="text-[11px] text-stone-300 leading-snug">
+                          Dark card container with status badge, name title, 5.0 star rating, and platform icons.
+                        </p>
+                      </button>
+                    </div>
+
+                    {/* Fine-grain toggles */}
+                    <div className="pt-2 border-t border-white/10 flex flex-wrap gap-4 text-xs">
+                      <label className="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-white">
+                        <input
+                          type="checkbox"
+                          checked={config.showFrame !== false}
+                          onChange={(e) => {
+                            const updated = { ...config, showFrame: e.target.checked };
+                            onUpdateConfig(updated);
+                            saveHeroImageConfig(updated);
+                          }}
+                          className="rounded text-[#F5A400] focus:ring-[#F5A400] w-4 h-4"
+                        />
+                        <span>Show Card Frame & Dark Background</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-white">
+                        <input
+                          type="checkbox"
+                          checked={config.showTextOverlay !== false}
+                          onChange={(e) => {
+                            const updated = { ...config, showTextOverlay: e.target.checked };
+                            onUpdateConfig(updated);
+                            saveHeroImageConfig(updated);
+                          }}
+                          className="rounded text-[#F5A400] focus:ring-[#F5A400] w-4 h-4"
+                        />
+                        <span>Show Text Overlays (Name, 5.0 Rating, Tags)</span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -772,6 +880,67 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
               {/* TAB 5: STYLING & BADGE */}
               {activeTab === 'styling' && (
                 <div className="space-y-5">
+                  {/* Quick Mode Switcher */}
+                  <div className="p-4 rounded-2xl bg-[#111111] border border-white/15 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-white">
+                        Display Mode
+                      </span>
+                      {!config.showFrame && (
+                        <span className="text-[10px] font-bold text-[#25D366] bg-[#25D366]/10 px-2 py-0.5 rounded-full">
+                          Transparent Cutout Active
+                        </span>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = {
+                            ...config,
+                            showFrame: false,
+                            showTextOverlay: false,
+                            objectFit: 'contain' as const,
+                            border: 'none' as const,
+                            shadow: 'none' as const,
+                          };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className={`p-3 rounded-xl border text-center text-xs font-bold transition-all cursor-pointer ${
+                          !config.showFrame
+                            ? 'border-[#25D366] bg-[#25D366]/20 text-white'
+                            : 'border-white/10 bg-[#171717] text-stone-400 hover:text-white'
+                        }`}
+                      >
+                        ✨ Transparent (No Frame / Text)
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = {
+                            ...config,
+                            showFrame: true,
+                            showTextOverlay: true,
+                            objectFit: 'cover' as const,
+                            border: 'thin' as const,
+                            shadow: 'deep' as const,
+                          };
+                          onUpdateConfig(updated);
+                          saveHeroImageConfig(updated);
+                        }}
+                        className={`p-3 rounded-xl border text-center text-xs font-bold transition-all cursor-pointer ${
+                          config.showFrame
+                            ? 'border-[#F5A400] bg-[#F5A400]/20 text-white'
+                            : 'border-white/10 bg-[#171717] text-stone-400 hover:text-white'
+                        }`}
+                      >
+                        🃏 Framed Card (Dark Frame)
+                      </button>
+                    </div>
+                  </div>
+
                   {/* Shadow Style */}
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-2">

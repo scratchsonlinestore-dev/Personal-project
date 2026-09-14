@@ -17,6 +17,8 @@ export const DEFAULT_HERO_IMAGE_CONFIG: HeroImageConfig = {
   border: 'thin',
   showBadge: true,
   badgeText: 'Specialist • Founder @ Scratch',
+  showFrame: true,
+  showTextOverlay: true,
 };
 
 const STORAGE_KEY = 'arshad_hero_image_config_v2';
@@ -27,7 +29,12 @@ export function getSavedHeroImageConfig(): HeroImageConfig {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      return { ...DEFAULT_HERO_IMAGE_CONFIG, ...parsed };
+      return {
+        ...DEFAULT_HERO_IMAGE_CONFIG,
+        ...parsed,
+        showFrame: parsed.showFrame !== undefined ? parsed.showFrame : true,
+        showTextOverlay: parsed.showTextOverlay !== undefined ? parsed.showTextOverlay : true,
+      };
     }
   } catch (err) {
     console.error('Failed to parse saved hero image config', err);

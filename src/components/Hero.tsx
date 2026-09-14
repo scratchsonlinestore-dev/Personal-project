@@ -26,7 +26,7 @@ interface HeroProps {
   onOpenResume: () => void;
   onOpenProjects: () => void;
   imageConfig: HeroImageConfig;
-  onOpenCustomizer: () => void;
+  onOpenCustomizer?: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -34,15 +34,18 @@ export const Hero: React.FC<HeroProps> = ({
   onOpenResume,
   onOpenProjects,
   imageConfig,
-  onOpenCustomizer,
 }) => {
   const handleDownloadCV = () => {
     downloadOfficialResume();
     onOpenResume();
   };
 
+  const isFrameVisible = imageConfig.showFrame !== false;
+  const isTextOverlayVisible = isFrameVisible && imageConfig.showTextOverlay !== false;
+
   // Shadow class mappings
   const getShadowClass = () => {
+    if (!isFrameVisible) return 'shadow-none';
     switch (imageConfig.shadow) {
       case 'none':
         return 'shadow-none';
@@ -58,6 +61,7 @@ export const Hero: React.FC<HeroProps> = ({
 
   // Border class mappings
   const getBorderClass = () => {
+    if (!isFrameVisible) return 'border-0';
     switch (imageConfig.border) {
       case 'none':
         return 'border-0';
@@ -80,23 +84,29 @@ export const Hero: React.FC<HeroProps> = ({
           transform: `translate(${imageConfig.offsetX}px, ${imageConfig.offsetY}px) scale(${imageConfig.scale})`,
         }}
       >
-        {/* Ambient Subtle Backdrop Glow */}
-        <div
-          className="absolute -inset-2 bg-gradient-to-tr from-[#F5A400]/20 via-transparent to-[#111111]/10 blur-xl pointer-events-none"
-          style={{ borderRadius: `${imageConfig.borderRadius + 8}px` }}
-        ></div>
+        {/* Ambient Subtle Backdrop Glow (Only active when frame is visible) */}
+        {isFrameVisible && (
+          <div
+            className="absolute -inset-2 bg-gradient-to-tr from-[#F5A400]/20 via-transparent to-[#111111]/10 blur-xl pointer-events-none"
+            style={{ borderRadius: `${imageConfig.borderRadius + 8}px` }}
+          ></div>
+        )}
 
-        {/* Card Frame */}
+        {/* Card Frame / Transparent Canvas */}
         <div
-          className={`relative bg-[#111111] overflow-hidden ${getBorderClass()} ${getShadowClass()} transition-all duration-200 max-w-full`}
+          className={`relative overflow-hidden transition-all duration-200 max-w-full ${
+            isFrameVisible
+              ? `bg-[#111111] ${getBorderClass()} ${getShadowClass()}`
+              : 'bg-transparent border-0 shadow-none'
+          }`}
           style={{
             width: `${imageConfig.width}px`,
             height: `${imageConfig.height}px`,
-            borderRadius: `${imageConfig.borderRadius}px`,
+            borderRadius: isFrameVisible ? `${imageConfig.borderRadius}px` : '0px',
           }}
         >
           {/* Status Badge Over Image */}
-          {imageConfig.showBadge && (
+          {isTextOverlayVisible && imageConfig.showBadge && (
             <div className="absolute top-3.5 inset-x-3.5 z-20 flex items-center justify-between pointer-events-none">
               <span className="px-3 py-1 rounded-full bg-[#111111]/90 backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-wider text-[#F5A400] flex items-center gap-1.5 shadow-md">
                 <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse"></span>
@@ -108,13 +118,15 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
           )}
 
-          {/* Main Portrait Image */}
+          {/* Main Portrait Image (supports transparent PNG/WEBP without clipping or background) */}
           <img
             src={imageConfig.imageUrl || '/arshad-portrait.jpg'}
             alt="Arshad TV - E-Commerce Operations & Digital Trading Specialist"
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            className={`w-full h-full transition-transform duration-300 ${
+              isFrameVisible ? 'object-cover group-hover:scale-[1.02]' : 'object-contain drop-shadow-md'
+            }`}
             style={{
-              objectFit: imageConfig.objectFit,
+              objectFit: !isFrameVisible ? 'contain' : imageConfig.objectFit,
               objectPosition: `center ${imageConfig.objectPositionY}%`,
             }}
             onError={(e) => {
@@ -123,32 +135,25 @@ export const Hero: React.FC<HeroProps> = ({
             }}
           />
 
-          {/* Bottom subtle gradient scrim */}
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#111111] via-[#111111]/60 to-transparent pointer-events-none"></div>
+          {/* Bottom subtle gradient scrim (only when framed and text overlay is enabled) */}
+          {isTextOverlayVisible && (
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#111111] via-[#111111]/60 to-transparent pointer-events-none"></div>
+          )}
 
-          {/* Bottom Card Title */}
-          <div className="absolute inset-x-0 bottom-0 p-3.5 z-10 text-left bg-gradient-to-t from-[#111111] to-transparent">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-black text-white">{profile.name}</span>
-              <span className="text-[10px] font-bold text-[#F5A400] flex items-center gap-1">
-                <Star className="w-3 h-3 fill-[#F5A400]" /> 5.0 Rated
-              </span>
+          {/* Bottom Card Title (only when framed and text overlay is enabled) */}
+          {isTextOverlayVisible && (
+            <div className="absolute inset-x-0 bottom-0 p-3.5 z-10 text-left bg-gradient-to-t from-[#111111] to-transparent">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-black text-white">{profile.name}</span>
+                <span className="text-[10px] font-bold text-[#F5A400] flex items-center gap-1">
+                  <Star className="w-3 h-3 fill-[#F5A400]" /> 5.0 Rated
+                </span>
+              </div>
+              <p className="text-[11px] text-stone-300 font-medium leading-tight mt-0.5">
+                Shopify • Amazon • Flipkart • Meesho • noon
+              </p>
             </div>
-            <p className="text-[11px] text-stone-300 font-medium leading-tight mt-0.5">
-              Shopify • Amazon • Flipkart • Meesho • noon
-            </p>
-          </div>
-
-          {/* Quick Edit Overlay for Owner */}
-          <button
-            type="button"
-            onClick={onOpenCustomizer}
-            title="Adjust image, size, position or upload new photo"
-            className="absolute top-3.5 right-3.5 z-30 opacity-0 group-hover:opacity-100 transition-opacity px-2.5 py-1 rounded-lg bg-[#F5A400] text-[#111111] text-[10px] font-black uppercase tracking-wider shadow-lg flex items-center gap-1 cursor-pointer"
-          >
-            <Sliders className="w-3 h-3" />
-            <span>Edit</span>
-          </button>
+          )}
         </div>
       </div>
     );
@@ -185,11 +190,6 @@ export const Hero: React.FC<HeroProps> = ({
             {profile.secondaryPositioning}
           </p>
         </div>
-
-        {/* Introduction Paragraph */}
-        <p className="text-base sm:text-lg text-[#444444] font-medium leading-relaxed max-w-xl">
-          Building and scaling multi-channel digital retail operations. Ex-Founder of Scratch, driving vendor sourcing, catalog optimization, and high-performance ad conversions across India and GCC markets.
-        </p>
 
         {/* Key Operational Highlights */}
         <div className={`flex flex-wrap gap-2 pt-1 ${isCentered ? 'justify-center' : 'justify-start'}`}>
@@ -320,10 +320,8 @@ export const Hero: React.FC<HeroProps> = ({
           </div>
         )}
 
-        {/* OWNER ACCESS CONTROLS BAR LOCATED BELOW */}
+        {/* Supporting Keywords Pill Row (Clean section footer without owner control buttons) */}
         <div className="mt-12 pt-6 border-t border-[#111111]/10 flex flex-wrap items-center justify-between gap-4">
-          
-          {/* Supporting Keywords Pill Row */}
           <div className="flex flex-wrap items-center gap-2">
             {(profile.supportingKeywords || []).slice(0, 4).map((keyword) => (
               <span
@@ -336,20 +334,6 @@ export const Hero: React.FC<HeroProps> = ({
             <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-[#111111] text-[#FFFFFF]">
               India & GCC Operations
             </span>
-          </div>
-
-          {/* Dedicated Owner Access Button ("its access on below, use credential access") */}
-          <div className="ml-auto">
-            <button
-              type="button"
-              onClick={onOpenCustomizer}
-              title="Upload new image, adjust alignment (left/right) or manual size/position"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#111111] hover:bg-[#F5A400] text-white hover:text-[#111111] border border-white/10 text-xs font-bold transition-all shadow-md cursor-pointer group"
-            >
-              <Lock className="w-3.5 h-3.5 text-[#F5A400] group-hover:text-[#111111]" />
-              <span>Owner Access: Adjust Image & Layout</span>
-              <Sliders className="w-3.5 h-3.5" />
-            </button>
           </div>
         </div>
 

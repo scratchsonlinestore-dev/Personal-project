@@ -79,6 +79,8 @@ export interface HeroImageConfig {
   border: 'none' | 'thin' | 'amber' | 'bold';
   showBadge: boolean;
   badgeText: string;
+  showFrame: boolean;
+  showTextOverlay: boolean;
 }
 
 export interface ExpertiseItem {

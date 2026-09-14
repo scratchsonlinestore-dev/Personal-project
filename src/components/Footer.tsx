@@ -130,12 +130,13 @@ export const Footer: React.FC<FooterProps> = ({ profile, onOpenCustomizer }) => 
             {onOpenCustomizer && (
               <button
                 type="button"
+                id="footer-owner-access-btn"
                 onClick={onOpenCustomizer}
-                title="Credential Access: Customize Hero Image, Alignment & Size"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-[#F5A400] hover:text-[#111111] text-stone-300 font-bold border border-white/10 transition-colors cursor-pointer"
+                title="Credential Access: Customize Hero Image, Alignment, Size & Frame"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#171717] hover:bg-[#F5A400] text-white hover:text-[#111111] font-bold border border-white/20 hover:border-[#F5A400] shadow-sm transition-all cursor-pointer group text-xs"
               >
-                <Lock className="w-3 h-3 text-[#F5A400]" />
-                <span>Owner Image Access</span>
+                <Lock className="w-3.5 h-3.5 text-[#F5A400] group-hover:text-[#111111]" />
+                <span>Owner Access: Adjust Image & Layout</span>
               </button>
             )}
 
