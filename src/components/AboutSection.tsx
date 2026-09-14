@@ -4,9 +4,13 @@ import { Profile } from '../types';
 
 interface AboutSectionProps {
   profile: Profile;
+  commercialSnapshotIconUrl?: string;
 }
 
-export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
+export const AboutSection: React.FC<AboutSectionProps> = ({
+  profile,
+  commercialSnapshotIconUrl,
+}) => {
   return (
     <section id="about" className="py-20 md:py-28 bg-[#F4F2E8] border-t border-[#111111]/10">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -54,7 +58,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ profile }) => {
               <div className="flex items-center gap-3 pb-4 border-b border-white/10">
                 <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/20 shadow-xs shrink-0 bg-[#111111]">
                   <img
-                    src="/arshad-portrait-dark.jpg"
+                    src={commercialSnapshotIconUrl || '/arshad-portrait-dark.jpg'}
                     alt="Arshad TV"
                     className="w-full h-full object-cover object-top"
                   />

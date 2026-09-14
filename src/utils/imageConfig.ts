@@ -19,6 +19,10 @@ export const DEFAULT_HERO_IMAGE_CONFIG: HeroImageConfig = {
   badgeText: 'Specialist • Founder @ Scratch',
   showFrame: true,
   showTextOverlay: true,
+  brandIconType: 'text',
+  brandIconText: 'ATV',
+  brandIconUrl: '',
+  commercialSnapshotIconUrl: '/arshad-portrait-dark.jpg',
 };
 
 const STORAGE_KEY = 'arshad_hero_image_config_v2';
@@ -34,6 +38,10 @@ export function getSavedHeroImageConfig(): HeroImageConfig {
         ...parsed,
         showFrame: parsed.showFrame !== undefined ? parsed.showFrame : true,
         showTextOverlay: parsed.showTextOverlay !== undefined ? parsed.showTextOverlay : true,
+        brandIconType: parsed.brandIconType || 'text',
+        brandIconText: parsed.brandIconText || 'ATV',
+        brandIconUrl: parsed.brandIconUrl || '',
+        commercialSnapshotIconUrl: parsed.commercialSnapshotIconUrl || '/arshad-portrait-dark.jpg',
       };
     }
   } catch (err) {

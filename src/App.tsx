@@ -80,6 +80,8 @@ export default function App() {
         onOpenResume={() => setIsResumeOpen(true)}
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
+        brandIconUrl={heroImageConfig.brandIconUrl}
+        brandIconText={heroImageConfig.brandIconText}
       />
 
       {/* Main content flow */}
@@ -90,14 +92,16 @@ export default function App() {
           onOpenResume={() => setIsResumeOpen(true)}
           onOpenProjects={scrollToProjects}
           imageConfig={heroImageConfig}
-          onOpenCustomizer={() => setIsCustomizerOpen(true)}
         />
 
         {/* Signature Reference Marquee Ticker 1 */}
         <MarqueeBanner />
 
         {/* 4. About Section */}
-        <AboutSection profile={portfolioProfile} />
+        <AboutSection
+          profile={portfolioProfile}
+          commercialSnapshotIconUrl={heroImageConfig.commercialSnapshotIconUrl}
+        />
 
         {/* 5 & 6. Professional Experience & Career Journey */}
         <ExperienceSection
@@ -152,6 +156,8 @@ export default function App() {
       <Footer
         profile={portfolioProfile}
         onOpenCustomizer={() => setIsCustomizerOpen(true)}
+        brandIconUrl={heroImageConfig.brandIconUrl}
+        brandIconText={heroImageConfig.brandIconText}
       />
 
       {/* Modals */}

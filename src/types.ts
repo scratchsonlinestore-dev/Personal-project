@@ -81,6 +81,10 @@ export interface HeroImageConfig {
   badgeText: string;
   showFrame: boolean;
   showTextOverlay: boolean;
+  brandIconType?: 'text' | 'image';
+  brandIconText?: string;
+  brandIconUrl?: string;
+  commercialSnapshotIconUrl?: string;
 }
 
 export interface ExpertiseItem {

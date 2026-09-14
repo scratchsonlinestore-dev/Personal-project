@@ -5,9 +5,16 @@ import { Profile } from '../types';
 interface FooterProps {
   profile: Profile;
   onOpenCustomizer?: () => void;
+  brandIconUrl?: string;
+  brandIconText?: string;
 }
 
-export const Footer: React.FC<FooterProps> = ({ profile, onOpenCustomizer }) => {
+export const Footer: React.FC<FooterProps> = ({
+  profile,
+  onOpenCustomizer,
+  brandIconUrl,
+  brandIconText = 'ATV',
+}) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -29,8 +36,16 @@ export const Footer: React.FC<FooterProps> = ({ profile, onOpenCustomizer }) => 
           {/* Brand & Positioning */}
           <div className="md:col-span-6 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#F5A400] text-[#111111] font-black text-sm flex items-center justify-center shadow-xs">
-                ATV
+              <div className="w-10 h-10 rounded-full bg-[#F5A400] text-[#111111] font-black text-sm flex items-center justify-center shadow-xs overflow-hidden shrink-0 border border-white/10">
+                {brandIconUrl ? (
+                  <img
+                    src={brandIconUrl}
+                    alt={profile.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span>{brandIconText}</span>
+                )}
               </div>
               <span className="text-2xl font-black tracking-tight text-white">
                 {profile.name}

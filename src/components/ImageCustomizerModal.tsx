@@ -18,6 +18,9 @@ import {
   ShieldCheck,
   Eye,
   LogOut,
+  Layers,
+  Type,
+  Trash2,
 } from 'lucide-react';
 import { HeroImageConfig } from '../types';
 import {
@@ -50,12 +53,17 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
   const [rememberMe, setRememberMe] = useState<boolean>(true);
 
   // Active customizer tab
-  const [activeTab, setActiveTab] = useState<'upload' | 'alignment' | 'size' | 'position' | 'styling'>('upload');
+  const [activeTab, setActiveTab] = useState<'upload' | 'icons' | 'alignment' | 'size' | 'position' | 'styling'>('upload');
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
 
-  // File input ref
+  // File input refs
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const brandIconInputRef = useRef<HTMLInputElement>(null);
+  const snapshotIconInputRef = useRef<HTMLInputElement>(null);
+
   const [dragActive, setDragActive] = useState<boolean>(false);
+  const [brandDragActive, setBrandDragActive] = useState<boolean>(false);
+  const [snapshotDragActive, setSnapshotDragActive] = useState<boolean>(false);
 
   if (!isOpen) return null;
 
@@ -99,6 +107,59 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
           ...config,
           imageUrl: dataUrl,
           presetKey: 'custom' as const,
+        };
+        onUpdateConfig(updated);
+        saveHeroImageConfig(updated);
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 2000);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleBrandIconUpload = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file (PNG, JPG, JPEG, SVG, WEBP).');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size exceeds 5MB. Please select a smaller icon.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      if (dataUrl) {
+        const updated: HeroImageConfig = {
+          ...config,
+          brandIconType: 'image',
+          brandIconUrl: dataUrl,
+        };
+        onUpdateConfig(updated);
+        saveHeroImageConfig(updated);
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 2000);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSnapshotIconUpload = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file (PNG, JPG, JPEG, SVG, WEBP).');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size exceeds 5MB. Please select a smaller image.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      if (dataUrl) {
+        const updated: HeroImageConfig = {
+          ...config,
+          commercialSnapshotIconUrl: dataUrl,
         };
         onUpdateConfig(updated);
         saveHeroImageConfig(updated);
@@ -158,15 +219,15 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
             </div>
             <div>
               <h2 className="text-base font-black tracking-tight text-white flex items-center gap-2">
-                Hero Image Customizer
+                Owner Control Panel
                 <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-[#F5A400]/20 text-[#F5A400] border border-[#F5A400]/30">
                   Owner Access
                 </span>
               </h2>
               <p className="text-xs text-stone-400">
                 {authenticated
-                  ? 'Adjust alignment, manual size, offsets, and upload custom images'
-                  : 'Enter owner credentials to access layout controls'}
+                  ? 'Customize Hero Photo, Brand Icon (ATV), Commercial Snapshot Icon & Layout'
+                  : 'Enter owner credentials to access layout and image controls'}
               </p>
             </div>
           </div>
@@ -275,20 +336,33 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('upload')}
-                className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`flex-1 min-w-[85px] py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   activeTab === 'upload'
                     ? 'bg-[#F5A400] text-[#111111] shadow-xs'
                     : 'text-stone-400 hover:text-white'
                 }`}
               >
                 <Upload className="w-3.5 h-3.5" />
-                <span>Upload</span>
+                <span>Hero Photo</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('icons')}
+                className={`flex-1 min-w-[85px] py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  activeTab === 'icons'
+                    ? 'bg-[#F5A400] text-[#111111] shadow-xs'
+                    : 'text-stone-400 hover:text-white'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>Icons</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('alignment')}
-                className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`flex-1 min-w-[85px] py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   activeTab === 'alignment'
                     ? 'bg-[#F5A400] text-[#111111] shadow-xs'
                     : 'text-stone-400 hover:text-white'
@@ -301,7 +375,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('size')}
-                className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`flex-1 min-w-[85px] py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   activeTab === 'size'
                     ? 'bg-[#F5A400] text-[#111111] shadow-xs'
                     : 'text-stone-400 hover:text-white'
@@ -314,7 +388,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('position')}
-                className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`flex-1 min-w-[85px] py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   activeTab === 'position'
                     ? 'bg-[#F5A400] text-[#111111] shadow-xs'
                     : 'text-stone-400 hover:text-white'
@@ -327,7 +401,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('styling')}
-                className={`flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`flex-1 min-w-[85px] py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   activeTab === 'styling'
                     ? 'bg-[#F5A400] text-[#111111] shadow-xs'
                     : 'text-stone-400 hover:text-white'
@@ -562,6 +636,439 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                         />
                         <span>Show Text Overlays (Name, 5.0 Rating, Tags)</span>
                       </label>
+                    </div>
+
+                    {/* Quick link to Icons tab */}
+                    <div className="pt-3 border-t border-white/10 flex items-center justify-between gap-3 bg-[#111111] p-3 rounded-xl">
+                      <div className="flex items-center gap-2.5">
+                        <Layers className="w-4 h-4 text-[#F5A400] shrink-0" />
+                        <div>
+                          <p className="text-xs font-bold text-white">
+                            Looking to change your Brand Icon (ATV) or Snapshot Icon?
+                          </p>
+                          <p className="text-[11px] text-stone-400">
+                            Upload custom logos or edit initials for Navbar, Footer &amp; About card
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('icons')}
+                        className="px-3 py-1.5 rounded-lg bg-[#F5A400] text-[#111111] text-xs font-bold hover:bg-[#e59900] transition-colors cursor-pointer shrink-0"
+                      >
+                        Change Icons →
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB: ICONS & BRANDING (Navbar Brand Icon & Commercial Snapshot Icon) */}
+              {activeTab === 'icons' && (
+                <div className="space-y-6">
+                  {/* Top explanation banner */}
+                  <div className="p-3.5 rounded-2xl bg-[#111111] border border-white/10 flex items-start gap-3">
+                    <Layers className="w-4 h-4 text-[#F5A400] shrink-0 mt-0.5" />
+                    <p className="text-xs text-stone-300 leading-relaxed">
+                      Customize the two badges highlighted across the site: the <strong className="text-white">Brand Icon</strong> (floating top Navbar &amp; Footer next to &quot;Arshad TV&quot;) and the <strong className="text-white">Commercial Snapshot Icon</strong> (About section card header).
+                    </p>
+                  </div>
+
+                  {/* ICON 1: BRAND IDENTITY ICON (NAVBAR & FOOTER) */}
+                  <div className="p-5 rounded-2xl bg-[#111111] border border-white/15 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/10">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-[#F5A400]"></span>
+                          <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+                            1. Brand Icon (Navbar &amp; Footer)
+                          </h3>
+                        </div>
+                        <p className="text-[11px] text-stone-400 mt-0.5">
+                          The circular badge shown beside &quot;Arshad TV • E-Commerce Specialist&quot;
+                        </p>
+                      </div>
+
+                      {/* Display Mode Toggle */}
+                      <div className="inline-flex rounded-xl bg-[#171717] p-1 border border-white/10">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = { ...config, brandIconType: 'text' as const, brandIconUrl: '' };
+                            onUpdateConfig(updated);
+                            saveHeroImageConfig(updated);
+                          }}
+                          className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                            !config.brandIconUrl
+                              ? 'bg-[#F5A400] text-[#111111] shadow-xs'
+                              : 'text-stone-400 hover:text-white'
+                          }`}
+                        >
+                          <Type className="w-3 h-3" />
+                          <span>Initials Badge (ATV)</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = {
+                              ...config,
+                              brandIconType: 'image' as const,
+                              brandIconUrl: config.brandIconUrl || '/arshad-portrait.jpg',
+                            };
+                            onUpdateConfig(updated);
+                            saveHeroImageConfig(updated);
+                          }}
+                          className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                            config.brandIconUrl
+                              ? 'bg-[#F5A400] text-[#111111] shadow-xs'
+                              : 'text-stone-400 hover:text-white'
+                          }`}
+                        >
+                          <ImageIcon className="w-3 h-3" />
+                          <span>Custom Photo / Logo</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Live Preview of Navbar Brand Pill */}
+                    <div>
+                      <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1.5">
+                        Live Preview (Navbar &amp; Footer Appearance)
+                      </span>
+                      <div className="p-3.5 rounded-2xl bg-[#171717] border border-white/10 flex flex-wrap items-center justify-between gap-4">
+                        {/* Navbar style pill preview */}
+                        <div className="flex items-center gap-3 bg-[#111111] px-4 py-2 rounded-full border border-white/10 shadow-sm">
+                          <div className="w-8 h-8 rounded-full bg-[#F5A400] text-[#111111] font-extrabold text-xs flex items-center justify-center tracking-wider overflow-hidden shrink-0 border border-white/10">
+                            {config.brandIconUrl ? (
+                              <img
+                                src={config.brandIconUrl}
+                                alt="Brand Icon Preview"
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <span>{config.brandIconText || 'ATV'}</span>
+                            )}
+                          </div>
+                          <div className="flex flex-col text-left">
+                            <span className="text-sm font-bold text-white leading-none">Arshad TV</span>
+                            <span className="text-[10px] text-stone-400 font-medium leading-tight mt-0.5">
+                              E-Commerce Specialist
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Footer style preview */}
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-10 h-10 rounded-full bg-[#F5A400] text-[#111111] font-black text-sm flex items-center justify-center shadow-xs overflow-hidden shrink-0 border border-white/10">
+                            {config.brandIconUrl ? (
+                              <img
+                                src={config.brandIconUrl}
+                                alt="Brand Icon Preview"
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <span>{config.brandIconText || 'ATV'}</span>
+                            )}
+                          </div>
+                          <span className="text-xs text-stone-400 font-medium">(Footer 40px icon)</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* If Image Mode is Active */}
+                    {config.brandIconUrl ? (
+                      <div className="space-y-3 pt-1">
+                        {/* Hidden input for brand icon */}
+                        <input
+                          ref={brandIconInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              handleBrandIconUpload(e.target.files[0]);
+                            }
+                          }}
+                          className="hidden"
+                        />
+
+                        {/* Drag and Drop / Click Upload for Brand Icon */}
+                        <div
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            setBrandDragActive(true);
+                          }}
+                          onDragLeave={(e) => {
+                            e.preventDefault();
+                            setBrandDragActive(false);
+                          }}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            setBrandDragActive(false);
+                            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                              handleBrandIconUpload(e.dataTransfer.files[0]);
+                            }
+                          }}
+                          onClick={() => brandIconInputRef.current?.click()}
+                          className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
+                            brandDragActive
+                              ? 'border-[#F5A400] bg-[#F5A400]/10'
+                              : 'border-white/20 hover:border-[#F5A400] bg-[#171717]'
+                          }`}
+                        >
+                          <Upload className="w-5 h-5 text-[#F5A400] mx-auto mb-1.5" />
+                          <p className="text-xs font-bold text-white">
+                            Upload New Icon Image or Logo
+                          </p>
+                          <p className="text-[11px] text-stone-400 mt-0.5">
+                            Click or drag PNG (transparent supported), WEBP, JPG, or SVG
+                          </p>
+                        </div>
+
+                        {/* Quick Presets for Brand Icon */}
+                        <div>
+                          <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1.5">
+                            Quick Presets for Brand Icon:
+                          </span>
+                          <div className="grid grid-cols-3 gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = { ...config, brandIconUrl: '/arshad-portrait.jpg', brandIconType: 'image' as const };
+                                onUpdateConfig(updated);
+                                saveHeroImageConfig(updated);
+                              }}
+                              className="p-2 rounded-xl bg-[#171717] hover:bg-white/10 border border-white/10 text-left flex items-center gap-2 cursor-pointer transition-colors"
+                            >
+                              <img src="/arshad-portrait.jpg" alt="Preset" className="w-7 h-7 rounded-full object-cover shrink-0" />
+                              <span className="text-xs font-medium text-stone-200 truncate">Light Studio</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = { ...config, brandIconUrl: '/arshad-portrait-dark.jpg', brandIconType: 'image' as const };
+                                onUpdateConfig(updated);
+                                saveHeroImageConfig(updated);
+                              }}
+                              className="p-2 rounded-xl bg-[#171717] hover:bg-white/10 border border-white/10 text-left flex items-center gap-2 cursor-pointer transition-colors"
+                            >
+                              <img src="/arshad-portrait-dark.jpg" alt="Preset" className="w-7 h-7 rounded-full object-cover shrink-0" />
+                              <span className="text-xs font-medium text-stone-200 truncate">Dark Studio</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = { ...config, brandIconUrl: config.imageUrl, brandIconType: 'image' as const };
+                                onUpdateConfig(updated);
+                                saveHeroImageConfig(updated);
+                              }}
+                              className="p-2 rounded-xl bg-[#171717] hover:bg-white/10 border border-white/10 text-left flex items-center gap-2 cursor-pointer transition-colors"
+                            >
+                              <img src={config.imageUrl} alt="Preset" className="w-7 h-7 rounded-full object-cover shrink-0" />
+                              <span className="text-xs font-medium text-stone-200 truncate">Use Hero Photo</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Button to remove image & revert to ATV text */}
+                        <div className="pt-2 flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = { ...config, brandIconUrl: '', brandIconType: 'text' as const };
+                              onUpdateConfig(updated);
+                              saveHeroImageConfig(updated);
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 border border-red-500/30 text-xs font-bold text-red-200 cursor-pointer transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Remove Image &amp; Revert to &quot;ATV&quot; Badge</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      /* If Text Mode is Active */
+                      <div className="space-y-3 pt-1">
+                        <div>
+                          <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-300 mb-1.5">
+                            Initials / Monogram Text (e.g. ATV, AT, A)
+                          </label>
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              maxLength={5}
+                              value={config.brandIconText || 'ATV'}
+                              onChange={(e) => {
+                                const updated = { ...config, brandIconText: e.target.value.toUpperCase() };
+                                onUpdateConfig(updated);
+                                saveHeroImageConfig(updated);
+                              }}
+                              placeholder="ATV"
+                              className="flex-1 px-4 py-2 rounded-xl bg-[#171717] border border-white/15 text-white font-black text-sm tracking-widest uppercase focus:outline-hidden focus:border-[#F5A400]"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = { ...config, brandIconText: 'ATV' };
+                                onUpdateConfig(updated);
+                                saveHeroImageConfig(updated);
+                              }}
+                              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-stone-300 hover:text-white cursor-pointer transition-colors"
+                            >
+                              Reset to ATV
+                            </button>
+                          </div>
+                        </div>
+
+                        <p className="text-[11px] text-stone-400">
+                          Or switch to <strong className="text-white">&quot;Custom Photo / Logo&quot;</strong> above to display your actual portrait or company logo instead of initials.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ICON 2: COMMERCIAL SNAPSHOT CARD ICON (ABOUT SECTION) */}
+                  <div className="p-5 rounded-2xl bg-[#111111] border border-white/15 space-y-4">
+                    <div className="pb-3 border-b border-white/10">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#F5A400]"></span>
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+                          2. Commercial Snapshot Icon (About Section)
+                        </h3>
+                      </div>
+                      <p className="text-[11px] text-stone-400 mt-0.5">
+                        The 12x12 thumbnail displayed in the Commercial Snapshot overview card
+                      </p>
+                    </div>
+
+                    {/* Live Preview of Snapshot Header Card */}
+                    <div>
+                      <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1.5">
+                        Live Preview (About Section Card Header)
+                      </span>
+                      <div className="p-4 rounded-2xl bg-[#171717] border border-white/10 flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/20 shadow-xs shrink-0 bg-[#111111]">
+                          <img
+                            src={config.commercialSnapshotIconUrl || '/arshad-portrait-dark.jpg'}
+                            alt="Snapshot Icon Preview"
+                            className="w-full h-full object-cover object-top"
+                          />
+                        </div>
+                        <div className="flex flex-col text-left">
+                          <span className="text-base font-black text-white leading-tight">
+                            Commercial Snapshot
+                          </span>
+                          <span className="text-xs text-stone-400 font-medium leading-tight mt-0.5">
+                            Core platforms &amp; technical toolkit
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Hidden input for commercial snapshot icon */}
+                    <input
+                      ref={snapshotIconInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleSnapshotIconUpload(e.target.files[0]);
+                        }
+                      }}
+                      className="hidden"
+                    />
+
+                    {/* Drag and Drop / Click Upload for Commercial Snapshot */}
+                    <div
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setSnapshotDragActive(true);
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        setSnapshotDragActive(false);
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        setSnapshotDragActive(false);
+                        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                          handleSnapshotIconUpload(e.dataTransfer.files[0]);
+                        }
+                      }}
+                      onClick={() => snapshotIconInputRef.current?.click()}
+                      className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
+                        snapshotDragActive
+                          ? 'border-[#F5A400] bg-[#F5A400]/10'
+                          : 'border-white/20 hover:border-[#F5A400] bg-[#171717]'
+                      }`}
+                    >
+                      <Upload className="w-5 h-5 text-[#F5A400] mx-auto mb-1.5" />
+                      <p className="text-xs font-bold text-white">
+                        Upload New Commercial Snapshot Icon
+                      </p>
+                      <p className="text-[11px] text-stone-400 mt-0.5">
+                        Click or drag PNG, WEBP, JPG or SVG photo
+                      </p>
+                    </div>
+
+                    {/* Presets & Reset */}
+                    <div>
+                      <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1.5">
+                        Quick Presets for Commercial Snapshot:
+                      </span>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = { ...config, commercialSnapshotIconUrl: '/arshad-portrait-dark.jpg' };
+                            onUpdateConfig(updated);
+                            saveHeroImageConfig(updated);
+                          }}
+                          className={`p-2 rounded-xl border text-left flex items-center gap-2 cursor-pointer transition-colors ${
+                            (config.commercialSnapshotIconUrl || '/arshad-portrait-dark.jpg') === '/arshad-portrait-dark.jpg'
+                              ? 'bg-[#F5A400]/15 border-[#F5A400] text-white'
+                              : 'bg-[#171717] hover:bg-white/10 border-white/10 text-stone-300'
+                          }`}
+                        >
+                          <img src="/arshad-portrait-dark.jpg" alt="Preset" className="w-7 h-7 rounded-lg object-cover object-top shrink-0" />
+                          <span className="text-xs font-medium truncate">Dark Studio (Default)</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = { ...config, commercialSnapshotIconUrl: '/arshad-portrait.jpg' };
+                            onUpdateConfig(updated);
+                            saveHeroImageConfig(updated);
+                          }}
+                          className={`p-2 rounded-xl border text-left flex items-center gap-2 cursor-pointer transition-colors ${
+                            config.commercialSnapshotIconUrl === '/arshad-portrait.jpg'
+                              ? 'bg-[#F5A400]/15 border-[#F5A400] text-white'
+                              : 'bg-[#171717] hover:bg-white/10 border-white/10 text-stone-300'
+                          }`}
+                        >
+                          <img src="/arshad-portrait.jpg" alt="Preset" className="w-7 h-7 rounded-lg object-cover shrink-0" />
+                          <span className="text-xs font-medium truncate">Light Studio</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = { ...config, commercialSnapshotIconUrl: config.imageUrl };
+                            onUpdateConfig(updated);
+                            saveHeroImageConfig(updated);
+                          }}
+                          className={`p-2 rounded-xl border text-left flex items-center gap-2 cursor-pointer transition-colors ${
+                            config.commercialSnapshotIconUrl === config.imageUrl
+                              ? 'bg-[#F5A400]/15 border-[#F5A400] text-white'
+                              : 'bg-[#171717] hover:bg-white/10 border-white/10 text-stone-300'
+                          }`}
+                        >
+                          <img src={config.imageUrl} alt="Preset" className="w-7 h-7 rounded-lg object-cover shrink-0" />
+                          <span className="text-xs font-medium truncate">Use Hero Photo</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
