@@ -1,18 +1,16 @@
 import React from 'react';
-import { ArrowUp, Mail, Phone, MapPin, Linkedin, Instagram, Facebook, Lock } from 'lucide-react';
+import { ArrowUp, Mail, Phone, MapPin, Linkedin, Instagram, Facebook } from 'lucide-react';
 import { Profile } from '../types';
 
 interface FooterProps {
   profile: Profile;
-  onOpenCustomizer?: () => void;
   brandIconUrl?: string;
   brandIconText?: string;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   profile,
-  onOpenCustomizer,
-  brandIconUrl,
+  brandIconUrl = '/arshad-avatar.jpg',
   brandIconText = 'ATV',
 }) => {
   const scrollToTop = () => {
@@ -142,19 +140,6 @@ export const Footer: React.FC<FooterProps> = ({
           </p>
 
           <div className="flex items-center gap-3">
-            {onOpenCustomizer && (
-              <button
-                type="button"
-                id="footer-owner-access-btn"
-                onClick={onOpenCustomizer}
-                title="Credential Access: Customize Hero Image, Alignment, Size & Frame"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#171717] hover:bg-[#F5A400] text-white hover:text-[#111111] font-bold border border-white/20 hover:border-[#F5A400] shadow-sm transition-all cursor-pointer group text-xs"
-              >
-                <Lock className="w-3.5 h-3.5 text-[#F5A400] group-hover:text-[#111111]" />
-                <span>Owner Access: Adjust Image & Layout</span>
-              </button>
-            )}
-
             <button
               type="button"
               onClick={scrollToTop}

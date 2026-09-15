@@ -25,8 +25,7 @@ interface HeroProps {
   profile: Profile;
   onOpenResume: () => void;
   onOpenProjects: () => void;
-  imageConfig: HeroImageConfig;
-  onOpenCustomizer?: () => void;
+  imageConfig?: HeroImageConfig;
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -40,154 +39,25 @@ export const Hero: React.FC<HeroProps> = ({
     onOpenResume();
   };
 
-  const isFrameVisible = imageConfig.showFrame !== false;
-  const isTextOverlayVisible = isFrameVisible && imageConfig.showTextOverlay !== false;
-
-  // Shadow class mappings
-  const getShadowClass = () => {
-    if (!isFrameVisible) return 'shadow-none';
-    switch (imageConfig.shadow) {
-      case 'none':
-        return 'shadow-none';
-      case 'soft':
-        return 'shadow-lg';
-      case 'amber':
-        return 'shadow-[0_20px_45px_rgba(245,164,0,0.3)]';
-      case 'deep':
-      default:
-        return 'shadow-2xl';
-    }
-  };
-
-  // Border class mappings
-  const getBorderClass = () => {
-    if (!isFrameVisible) return 'border-0';
-    switch (imageConfig.border) {
-      case 'none':
-        return 'border-0';
-      case 'amber':
-        return 'border-2 border-[#F5A400]';
-      case 'bold':
-        return 'border-4 border-[#111111]';
-      case 'thin':
-      default:
-        return 'border-2 border-white/20';
-    }
-  };
-
-  // Dynamic Image Component with manual size, offsets, and styles
+  // Main Founder Image Component (First image on main page left side)
   const renderHeroImage = () => {
+    const imageUrl = imageConfig?.imageUrl || '/arshad-founder.jpg';
     return (
-      <div
-        className="relative group transition-all duration-200"
-        style={{
-          transform: `translate(${imageConfig.offsetX}px, ${imageConfig.offsetY}px) scale(${imageConfig.scale})`,
-        }}
-      >
-        {/* Ambient Subtle Backdrop Glow (Only active when frame is visible) */}
-        {isFrameVisible && (
-          <div
-            className="absolute -inset-2 bg-gradient-to-tr from-[#F5A400]/20 via-transparent to-[#111111]/10 blur-xl pointer-events-none"
-            style={{ borderRadius: `${imageConfig.borderRadius + 8}px` }}
-          ></div>
-        )}
+      <div className="relative group transition-all duration-300 w-full max-w-[420px] mx-auto lg:mx-0">
+        {/* Ambient Subtle Backdrop Glow */}
+        <div className="absolute -inset-3 bg-gradient-to-tr from-[#F5A400]/30 via-[#F5A400]/10 to-transparent blur-2xl pointer-events-none rounded-full"></div>
 
-        {/* Card Frame / Transparent Canvas */}
-        <div
-          className={`relative overflow-hidden transition-all duration-200 max-w-full ${
-            isFrameVisible
-              ? `bg-[#111111] ${getBorderClass()} ${getShadowClass()}`
-              : 'bg-transparent border-0 shadow-none'
-          }`}
-          style={{
-            width: `${imageConfig.width}px`,
-            height: `${imageConfig.height}px`,
-            borderRadius: isFrameVisible ? `${imageConfig.borderRadius}px` : '0px',
-          }}
-        >
-          {/* Status Badge Over Image */}
-          {isTextOverlayVisible && imageConfig.showBadge && (
-            <div className="absolute top-3.5 inset-x-3.5 z-20 flex items-center justify-between pointer-events-none">
-              <span className="px-3 py-1 rounded-full bg-[#111111]/90 backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-wider text-[#F5A400] flex items-center gap-1.5 shadow-md">
-                <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse"></span>
-                {imageConfig.badgeText || 'Specialist'}
-              </span>
-              <span className="px-2.5 py-1 rounded-full bg-[#111111]/85 backdrop-blur-md border border-white/15 text-[10px] font-bold text-white shadow-md">
-                BCA Graduate
-              </span>
-            </div>
-          )}
-
-          {/* Main Portrait Image (supports transparent PNG/WEBP without clipping or background) */}
+        {/* Hero Portrait Container (Displays clean cutout with golden sunburst circle and Founder badge) */}
+        <div className="relative overflow-hidden rounded-3xl transition-all duration-300 hover:scale-[1.02] shadow-2xl border border-white/60 bg-white/40 backdrop-blur-xs aspect-square flex items-center justify-center p-2 sm:p-3">
           <img
-            src={imageConfig.imageUrl || '/arshad-portrait.jpg'}
-            alt="Arshad TV - E-Commerce Operations & Digital Trading Specialist"
-            className={`w-full h-full transition-transform duration-300 ${
-              isFrameVisible ? 'object-cover group-hover:scale-[1.02]' : 'object-contain drop-shadow-md'
-            }`}
-            style={{
-              objectFit: !isFrameVisible ? 'contain' : imageConfig.objectFit,
-              objectPosition: `center ${imageConfig.objectPositionY}%`,
-            }}
+            src={imageUrl}
+            alt="Arshad TV - Founder, Multi-Channel E-Commerce Business"
+            className="w-full h-full object-contain drop-shadow-md rounded-2xl"
             onError={(e) => {
               const target = e.currentTarget;
               target.src = '/arshad-portrait.jpg';
             }}
           />
-
-          {/* Bottom subtle gradient scrim (only when framed and text overlay is enabled and bottom action pill not covering) */}
-          {isTextOverlayVisible && !imageConfig.showBottomActionPill && (
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#111111] via-[#111111]/60 to-transparent pointer-events-none"></div>
-          )}
-
-          {/* Bottom Card Title (only when framed and text overlay is enabled and bottom action pill not covering) */}
-          {isTextOverlayVisible && !imageConfig.showBottomActionPill && (
-            <div className="absolute inset-x-0 bottom-0 p-3.5 z-10 text-left bg-gradient-to-t from-[#111111] to-transparent">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-black text-white">{profile.name}</span>
-                <span className="text-[10px] font-bold text-[#F5A400] flex items-center gap-1">
-                  5.0 Rated
-                </span>
-              </div>
-              <p className="text-[11px] text-stone-300 font-medium leading-tight mt-0.5">
-                Shopify • Amazon • Flipkart • Meesho • noon
-              </p>
-            </div>
-          )}
-
-          {/* Floating Dual-Button Action Pill covering image bottom area (Reference Image 2 & 3) */}
-          {imageConfig.showBottomActionPill && (
-            <div className="absolute bottom-4 inset-x-0 flex justify-center z-30 pointer-events-auto px-2">
-              <div className="inline-flex items-center p-1 rounded-full bg-[#fdfaf2]/90 backdrop-blur-md border border-white/60 shadow-[0_8px_25px_rgba(0,0,0,0.18)] gap-1">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onOpenProjects();
-                    const el = document.getElementById('projects');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="flex items-center gap-1.5 pl-3.5 pr-2 py-1.5 rounded-full bg-[#F5A400] text-[#111111] font-black text-xs hover:bg-[#e59900] shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                >
-                  <span>Portfolio</span>
-                  <span className="w-4 h-4 rounded-full bg-[#111111] text-white flex items-center justify-center text-[10px] font-black leading-none">
-                    ↗
-                  </span>
-                </button>
-                <a
-                  href="#contact"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const el = document.getElementById('contact');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="px-3.5 py-1.5 rounded-full bg-white text-[#111111] font-extrabold text-xs hover:bg-stone-50 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-2xs border border-black/5"
-                >
-                  Hire Me
-                </a>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     );
@@ -321,37 +191,15 @@ export const Hero: React.FC<HeroProps> = ({
     <section id="home" className="pt-28 sm:pt-32 pb-14 md:pt-36 md:pb-20 overflow-hidden relative bg-[#F4F2E8]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
-        {/* HERO CONTENT: DYNAMICALLY ADAPTING TO ALIGNMENT (LEFT / CENTER / RIGHT) */}
-        {imageConfig.alignment === 'right' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            <div className="lg:col-span-7">
-              {renderHeroTextContent(false)}
-            </div>
-            <div className="lg:col-span-5 flex justify-center lg:justify-end">
-              {renderHeroImage()}
-            </div>
+        {/* HERO CONTENT: FIRST IMAGE ON MAIN PAGE LEFT SIDE */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+          <div className="lg:col-span-5 flex justify-center lg:justify-start order-1">
+            {renderHeroImage()}
           </div>
-        )}
-
-        {imageConfig.alignment === 'left' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            <div className="lg:col-span-5 flex justify-center lg:justify-start order-2 lg:order-1">
-              {renderHeroImage()}
-            </div>
-            <div className="lg:col-span-7 order-1 lg:order-2">
-              {renderHeroTextContent(false)}
-            </div>
+          <div className="lg:col-span-7 order-2">
+            {renderHeroTextContent(false)}
           </div>
-        )}
-
-        {imageConfig.alignment === 'center' && (
-          <div className="space-y-10 text-center">
-            {renderHeroTextContent(true)}
-            <div className="flex justify-center">
-              {renderHeroImage()}
-            </div>
-          </div>
-        )}
+        </div>
 
         {/* Supporting Keywords Pill Row (Clean section footer without owner control buttons) */}
         <div className="mt-12 pt-6 border-t border-[#111111]/10 flex flex-wrap items-center justify-between gap-4">

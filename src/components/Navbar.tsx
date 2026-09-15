@@ -17,7 +17,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenResume,
   isDark,
   onToggleTheme,
-  brandIconUrl,
+  brandIconUrl = '/arshad-avatar.jpg',
   brandIconText = 'ATV',
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
