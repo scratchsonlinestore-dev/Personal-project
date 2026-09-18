@@ -17,7 +17,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenResume,
   isDark,
   onToggleTheme,
-  brandIconUrl = '/arshad-avatar.jpg',
+  brandIconUrl,
   brandIconText = 'ATV',
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -73,15 +73,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="flex items-center gap-2.5 group focus:outline-hidden"
           >
             <div className="w-8 h-8 rounded-full bg-[#F5A400] text-[#111111] font-extrabold text-xs flex items-center justify-center tracking-wider transition-all duration-300 group-hover:scale-110 shadow-xs overflow-hidden shrink-0 border border-white/10">
-              {brandIconUrl ? (
-                <img
-                  src={brandIconUrl}
-                  alt={profile.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span>{brandIconText}</span>
-              )}
+              <span>{brandIconText}</span>
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-bold text-white tracking-tight group-hover:text-[#F5A400] transition-colors leading-none">

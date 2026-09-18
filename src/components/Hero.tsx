@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { Profile, HeroImageConfig } from '../types';
 import { downloadOfficialResume } from '../utils/downloadCV';
+import { DotPortrait } from './DotPortrait';
 
 interface HeroProps {
   profile: Profile;
@@ -39,26 +40,13 @@ export const Hero: React.FC<HeroProps> = ({
     onOpenResume();
   };
 
-  // Main Founder Image Component (First image on main page left side)
+  // Interactive Dot Portrait Component (Floating interactive particle portrait from original photo with transparent background)
   const renderHeroImage = () => {
-    const imageUrl = imageConfig?.imageUrl || '/arshad-founder.jpg';
     return (
-      <div className="relative group transition-all duration-300 w-full max-w-[420px] mx-auto lg:mx-0">
-        {/* Ambient Subtle Backdrop Glow */}
-        <div className="absolute -inset-3 bg-gradient-to-tr from-[#F5A400]/30 via-[#F5A400]/10 to-transparent blur-2xl pointer-events-none rounded-full"></div>
-
-        {/* Hero Portrait Container (Displays clean cutout with golden sunburst circle and Founder badge) */}
-        <div className="relative overflow-hidden rounded-3xl transition-all duration-300 hover:scale-[1.02] shadow-2xl border border-white/60 bg-white/40 backdrop-blur-xs aspect-square flex items-center justify-center p-2 sm:p-3">
-          <img
-            src={imageUrl}
-            alt="Arshad TV - Founder, Multi-Channel E-Commerce Business"
-            className="w-full h-full object-contain drop-shadow-md rounded-2xl"
-            onError={(e) => {
-              const target = e.currentTarget;
-              target.src = '/arshad-portrait.jpg';
-            }}
-          />
-        </div>
+      <div className="w-full flex justify-center lg:justify-start">
+        <DotPortrait
+          sourceImageUrl="/arshad-original-transparent.png"
+        />
       </div>
     );
   };
@@ -188,7 +176,7 @@ export const Hero: React.FC<HeroProps> = ({
   };
 
   return (
-    <section id="home" className="pt-28 sm:pt-32 pb-14 md:pt-36 md:pb-20 overflow-hidden relative bg-[#F4F2E8]">
+    <section id="home" className="pt-28 sm:pt-32 pb-14 md:pt-36 md:pb-20 overflow-hidden relative bg-[#F4F2E8] text-[#111111] transition-colors duration-200">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
         {/* HERO CONTENT: FIRST IMAGE ON MAIN PAGE LEFT SIDE */}

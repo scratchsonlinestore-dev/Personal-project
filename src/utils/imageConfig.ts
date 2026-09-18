@@ -20,10 +20,10 @@ export const DEFAULT_HERO_IMAGE_CONFIG: HeroImageConfig = {
   showFrame: false,
   showTextOverlay: false,
   showBottomActionPill: false,
-  brandIconType: 'image',
+  brandIconType: 'text',
   brandIconText: 'ATV',
-  brandIconUrl: '/arshad-avatar.jpg',
-  commercialSnapshotIconUrl: '/arshad-avatar.jpg',
+  brandIconUrl: undefined,
+  commercialSnapshotIconUrl: undefined,
 };
 
 export function getSavedHeroImageConfig(): HeroImageConfig {
